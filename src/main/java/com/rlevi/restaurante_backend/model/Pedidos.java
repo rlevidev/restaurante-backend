@@ -1,5 +1,7 @@
 package com.rlevi.restaurante_backend.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +31,7 @@ public class Pedidos {
     private Long pedidoId;
     @ManyToOne
     @JoinColumn(name = "alimento_id")
-    private Alimentos alimentos;
+    private Alimentos idAlimento;
     @Column(name = "quantidade", nullable=false)
     private Integer quantidade;
     @Column(name = "preco_total")
@@ -40,5 +43,12 @@ public class Pedidos {
     private String enderecoCliente;
     @Column(name = "telefone_cliente", nullable = false)
     private String telefoneCliente;
+    @Column(name = "data_criacao", nullable = false)
+    private LocalDateTime dataCriacao;
+
+    @PrePersist
+    public void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+    }
 
 }
