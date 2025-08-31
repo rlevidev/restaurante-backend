@@ -34,8 +34,11 @@ public class Pedidos {
     @Column(name = "preco_total")
     private Double precoTotal;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Clientes clientes;
+    @Column(name = "nome_cliente", nullable = false)
+    private String nomeCliente;
+    @Column(name = "endereco_cliente", nullable = false)
+    private String enderecoCliente;
+    @Column(name = "telefone_cliente", nullable = false)
+    private String telefoneCliente;
 
 }
