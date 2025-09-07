@@ -1,14 +1,13 @@
 package com.rlevi.restaurante_backend.security;
 
-import java.security.Key;
-import java.util.Date;
-
-import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -19,10 +18,12 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String nome, String role) {
+        String roleSemPrefix = role.replace("ROLE_", "");
+        
         return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)
+                .setSubject(nome)
+                .claim("role", roleSemPrefix)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -35,5 +36,25 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public boolean validarToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String extrairUsername(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    public String extrairRole(String token) {
+        return extractClaims(token).get("role", String.class);
     }
 }
