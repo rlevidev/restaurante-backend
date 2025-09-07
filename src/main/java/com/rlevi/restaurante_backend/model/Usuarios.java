@@ -1,5 +1,6 @@
 package com.rlevi.restaurante_backend.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +22,9 @@ public class Usuarios {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
 
+    @Column(unique = true, nullable = false)
     private String email;
+    
     private String nome;
     private String senha;
 

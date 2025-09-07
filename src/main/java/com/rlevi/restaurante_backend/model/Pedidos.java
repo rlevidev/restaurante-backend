@@ -29,20 +29,30 @@ public class Pedidos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pedidoId;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuarios usuario;
+
     @ManyToOne
     @JoinColumn(name = "alimento_id")
     private Alimentos idAlimento;
+
     @Column(name = "quantidade", nullable=false)
     private Integer quantidade;
+
     @Column(name = "preco_total")
     private Double precoTotal;
 
     @Column(name = "nome_cliente", nullable = false)
     private String nomeCliente;
+
     @Column(name = "endereco_cliente", nullable = false)
     private String enderecoCliente;
+
     @Column(name = "telefone_cliente", nullable = false)
     private String telefoneCliente;
+    
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
