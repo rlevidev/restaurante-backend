@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rlevi.restaurante_backend.dto.PedidosResponseDTO;
 import com.rlevi.restaurante_backend.model.Alimentos;
 import com.rlevi.restaurante_backend.model.Pedidos;
+import com.rlevi.restaurante_backend.model.Usuarios;
 import com.rlevi.restaurante_backend.repository.AlimentosRepository;
 import com.rlevi.restaurante_backend.repository.PedidosRepository;
 
@@ -19,7 +20,7 @@ public class PedidosService {
     @Autowired
     private PedidosRepository pedidosRepository;
 
-    public PedidosResponseDTO criarPedido(Long idAlimento, Integer quantidade, String nomeCliente, String enderecoCliente, String telefoneCliente) {
+    public PedidosResponseDTO criarPedido(Long idAlimento, Integer quantidade, String nomeCliente, String enderecoCliente, String telefoneCliente, Usuarios usuario) {
         Alimentos alimento = alimentosRepository.findById(idAlimento).orElseThrow(() -> new RuntimeException("Alimento nao encontrado"));
         Double precoTotal = alimento.getPrecoAlimento() * quantidade;
 
@@ -31,6 +32,7 @@ public class PedidosService {
                 .enderecoCliente(enderecoCliente)
                 .telefoneCliente(telefoneCliente)
                 .dataCriacao(LocalDateTime.now())
+                .usuario(usuario)
                 .build();
 
         Pedidos pedidoSalvo = pedidosRepository.save(pedidos);
