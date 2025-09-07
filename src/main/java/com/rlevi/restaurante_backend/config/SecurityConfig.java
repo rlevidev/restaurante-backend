@@ -1,5 +1,6 @@
 package com.rlevi.restaurante_backend.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,20 +15,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
+import com.rlevi.restaurante_backend.config.messages.CustomAccessDeniedHandler;
+import com.rlevi.restaurante_backend.config.messages.CustomAuthenticationEntryPoint;
 import com.rlevi.restaurante_backend.security.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
-    private final JwtFilter jwtFilter;
-    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
-        this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
-    }
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    
+    @Autowired
+    private JwtFilter jwtFilter;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,12 +42,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/auth/register", "/auth/login").permitAll()
+                                .requestMatchers("/auth/register", "/auth/login", "/h2-console/**").permitAll()
                                 .requestMatchers("/alimentos/listar", "/alimentos/buscar/{id}").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/pedidos/criar").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/alimentos/**", "/pedidos/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
