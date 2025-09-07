@@ -8,4 +8,5 @@ import com.rlevi.restaurante_backend.model.Usuarios;
 
 public interface UsuarioRepository extends JpaRepository<Usuarios, Long> {
     Optional<Usuarios> findByNome(String nome);
+    boolean existsByNome(String nome);
 }
