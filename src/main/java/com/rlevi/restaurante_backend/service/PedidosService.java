@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rlevi.restaurante_backend.dto.PedidosResponseDTO;
 import com.rlevi.restaurante_backend.model.Alimentos;
 import com.rlevi.restaurante_backend.model.Pedidos;
+import com.rlevi.restaurante_backend.model.StatusPedido;
 import com.rlevi.restaurante_backend.model.Usuarios;
 import com.rlevi.restaurante_backend.repository.AlimentosRepository;
 import com.rlevi.restaurante_backend.repository.PedidosRepository;
@@ -20,8 +21,10 @@ public class PedidosService {
     @Autowired
     private PedidosRepository pedidosRepository;
 
-    public PedidosResponseDTO criarPedido(Long idAlimento, Integer quantidade, String nomeCliente, String enderecoCliente, String telefoneCliente, Usuarios usuario) {
-        Alimentos alimento = alimentosRepository.findById(idAlimento).orElseThrow(() -> new RuntimeException("Alimento nao encontrado"));
+    public PedidosResponseDTO criarPedido(Long idAlimento, Integer quantidade, String nomeCliente,
+            String enderecoCliente, String telefoneCliente, Usuarios usuario) {
+        Alimentos alimento = alimentosRepository.findById(idAlimento)
+                .orElseThrow(() -> new RuntimeException("Alimento nao encontrado"));
         Double precoTotal = alimento.getPrecoAlimento() * quantidade;
 
         Pedidos pedidos = Pedidos.builder()
@@ -51,6 +54,7 @@ public class PedidosService {
                 .enderecoCliente(pedido.getEnderecoCliente())
                 .telefoneCliente(pedido.getTelefoneCliente())
                 .dataCriacao(pedido.getDataCriacao())
+                .status(pedido.getStatus())
                 .build();
     }
 
@@ -61,5 +65,25 @@ public class PedidosService {
 
     public void deletarPedido(Long id) {
         pedidosRepository.deleteById(id);
+    }
+
+    public StatusPedido avancarStatusAutomatico(Long pedidoId) {
+        Pedidos pedido = pedidosRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido nao encontrado."));
+        StatusPedido proximoStatus = pedido.getStatus().getProximoStatus();
+        pedido.setStatus(proximoStatus);
+
+        return pedidosRepository.save(pedido).getStatus();
+    }
+
+    public PedidosResponseDTO atualizarStatusManual(Long pedidoId, StatusPedido novoStatus) {
+        Pedidos pedido = pedidosRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido nao encontrado."));
+        pedido.setStatus(novoStatus);
+        pedido.setDataAtualizacao(LocalDateTime.now());
+
+        Pedidos atualizado = pedidosRepository.save(pedido);
+
+        return converterParaDTO(atualizado);
     }
 }
