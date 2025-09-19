@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,12 +41,13 @@ public class Pedidos {
     @JoinColumn(name = "alimento_id")
     private Alimentos idAlimento;
 
-    @Column(name = "quantidade", nullable=false)
+    @Column(nullable = false)
     private Integer quantidade;
 
     @Column(name = "preco_total")
     private Double precoTotal;
 
+    // Dados do cliente
     @Column(name = "nome_cliente", nullable = false)
     private String nomeCliente;
 
@@ -52,13 +56,26 @@ public class Pedidos {
 
     @Column(name = "telefone_cliente", nullable = false)
     private String telefoneCliente;
-    
-    @Column(name = "data_criacao", nullable = false)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusPedido status;
+
+    @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
     @PrePersist
-    public void onCreate() {
-        this.dataCriacao = LocalDateTime.now();
+    protected void onCreate() {
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+        status = StatusPedido.RECEBIDO;
     }
 
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
 }
