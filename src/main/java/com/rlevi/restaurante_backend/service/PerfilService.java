@@ -1,5 +1,10 @@
 package com.rlevi.restaurante_backend.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.rlevi.restaurante_backend.dto.PerfilResponseDTO;
@@ -7,12 +12,6 @@ import com.rlevi.restaurante_backend.model.Pedidos;
 import com.rlevi.restaurante_backend.model.Usuarios;
 import com.rlevi.restaurante_backend.repository.PedidosRepository;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
 public class PerfilService {
@@ -22,7 +21,8 @@ public class PerfilService {
     private UsuarioRepository usuarioRepository;
 
     public List<PerfilResponseDTO> buscarPedidosPorUsuario(String nome) {
-        Usuarios usuario = usuarioRepository.findByNome(nome).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+        Usuarios usuario = usuarioRepository.findByNome(nome)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
 
         List<Pedidos> pedidos = pedidosRepository.findByUsuarioOrderByDataCriacaoDesc(usuario);
 
@@ -34,9 +34,10 @@ public class PerfilService {
                 .pedidoId(pedido.getPedidoId())
                 .nomeAlimento(pedido.getIdAlimento().getNomeAlimento())
                 .quantidade(pedido.getQuantidade())
-                .precoUnitario  (pedido.getIdAlimento().getPrecoAlimento())
+                .precoUnitario(pedido.getIdAlimento().getPrecoAlimento())
                 .precoTotal(pedido.getPrecoTotal())
                 .dataCriacao(pedido.getDataCriacao())
+                .status(pedido.getStatus())
                 .build();
     }
 }
