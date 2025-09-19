@@ -2,6 +2,8 @@ package com.rlevi.restaurante_backend.dto;
 
 import java.time.LocalDateTime;
 
+import com.rlevi.restaurante_backend.model.StatusPedido;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +27,5 @@ public class PedidosResponseDTO {
     private String enderecoCliente;
     private String telefoneCliente;
     private LocalDateTime dataCriacao;
+    private StatusPedido status;
 }
