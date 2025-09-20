@@ -84,7 +84,7 @@ src/
 - Atualizar status dos pedidos
 - Avanço automático de status
 - Exclusão de pedidos
-- Controle de status: RECEBIDO → EM_PREPARO → PRONTO → ENTREGUE
+- Controle de status: RECEBIDO → NA_FILA → EM_PREPARO → PRONTO → A_CAMINHO → ENTREGUE
 
 ### 👤 Perfil do Usuário
 
@@ -133,36 +133,36 @@ cd restaurante-backend
 
 ### Autenticação
 
-```http
-POST /auth/register  # Registrar novo usuário
-POST /auth/login     # Fazer login
-```
+| Método | Endpoint         | Descrição             | Role Requerida |
+| ------ | ---------------- | --------------------- | -------------- |
+| POST   | `/auth/register` | Registar novo usuário | Nenhuma        |
+| POST   | `/auth/login`    | Fazer login           | Nenhuma        |
 
 ### Alimentos (Cardápio)
 
-```http
-GET    /alimentos          # Listar todos os alimentos
-POST   /alimentos          # Criar novo alimento
-GET    /alimentos/{id}     # Buscar alimento por ID
-PUT    /alimentos/{id}     # Atualizar alimento
-DELETE /alimentos/{id}     # Remover alimento
-```
+| Método | Endpoint                    | Descrição                 | Role Requerida |
+| ------ | --------------------------- | ------------------------- | -------------- |
+| GET    | `/alimentos/listar`         | Listar todos os alimentos | USER ou ADMIN  |
+| GET    | `/alimentos/buscar/{id}`    | Buscar alimento por ID    | USER ou ADMIN  |
+| POST   | `/alimentos/criar`          | Criar um novo alimento    | ADMIN          |
+| PUT    | `/alimentos/atualizar/{id}` | Atualizar alimento        | ADMIN          |
+| DELETE | `/alimentos/deletar/{id}`   | Remover alimento          | ADMIN          |
 
 ### Pedidos
 
-```http
-GET    /pedidos                    # Listar todos os pedidos
-POST   /pedidos                    # Criar novo pedido
-DELETE /pedidos/{id}               # Remover pedido
-PUT    /pedidos/{id}/status        # Atualizar status
-POST   /pedidos/{id}/avancar-status # Avanço automático
-```
+| Método | Endpoint                             | Descrição                    | Role Requerida |
+| ------ | ------------------------------------ | ---------------------------- | -------------- |
+| GET    | `/pedidos/listar`                    | Listar todos os pedidos      | ADMIN          |
+| POST   | `/pedidos/criar`                     | Criar novo pedido            | USER ou ADMIN  |
+| DELETE | `/pedidos/deletar/{id}`              | Remover pedido               | ADMIN          |
+| PATCH  | `/pedidos/{pedidoId}/status`         | Atualizar status manualmente | ADMIN          |
+| PATCH  | `/pedidos/{pedidoId}/status/avancar` | Avanço automático de status  | ADMIN          |
 
 ### Perfil do Usuário
 
-```http
-GET /perfil/pedidos # Histórico de pedidos do usuário
-```
+| Método | Endpoint          | Descrição                       | Role Requerida |
+| ------ | ----------------- | ------------------------------- | -------------- |
+| GET    | `/perfil/pedidos` | Histórico de pedidos do usuário | USER ou ADMIN  |
 
 ## 🔒 Autenticação JWT
 
@@ -213,7 +213,7 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "joao@email.com",
+  "nome": "João Silva",
   "senha": "123456"
 }
 ```
@@ -221,7 +221,7 @@ Content-Type: application/json
 ### 3. Criar Alimento
 
 ```bash
-POST /alimentos
+POST /alimentos/criar
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -235,7 +235,7 @@ Content-Type: application/json
 ### 4. Criar Pedido
 
 ```bash
-POST /pedidos
+POST /pedidos/criar
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -284,10 +284,7 @@ Este projeto está sob a licença GPL-3.0. Veja o arquivo [LICENSE](LICENSE) par
 
 ## 👨‍💻 Autor
 
-**R. Levi**
-
 - GitHub: [@rlevidev](https://github.com/rlevidev)
-- LinkedIn: [Seu LinkedIn]
 
 ## Contribuidores ✨
 

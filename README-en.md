@@ -7,7 +7,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/rlevidev/restaurante-backend)](https://github.com/rlevidev/restaurante-backend/commits/main)
 [![GitHub contributors](https://img.shields.io/github/contributors/rlevidev/restaurante-backend)](https://github.com/rlevidev/restaurante-backend/graphs/contributors)
 
-[Versão em português](./README.md)
+[Portuguese version](./README.md)
 
 ## About the Project 🎯
 
@@ -84,7 +84,7 @@ src/
 - Update order status
 - Automatic status advancement
 - Order deletion
-- Status control: RECEIVED → PREPARING → READY → DELIVERED
+- Status control: RECEIVED → IN_QUEUE → PREPARING → READY → ON_THE_WAY → DELIVERED
 
 ### 👤 User Profile
 
@@ -133,36 +133,36 @@ cd restaurante-backend
 
 ### Authentication
 
-```http
-POST /auth/register  # Register new user
-POST /auth/login     # Login
-```
+| Method | Endpoint         | Description       | Required Role |
+| ------ | ---------------- | ----------------- | ------------- |
+| POST   | `/auth/register` | Register new user | None          |
+| POST   | `/auth/login`    | Login             | None          |
 
 ### Food Items (Menu)
 
-```http
-GET    /alimentos          # List all food items
-POST   /alimentos          # Create new food item
-GET    /alimentos/{id}     # Get food item by ID
-PUT    /alimentos/{id}     # Update food item
-DELETE /alimentos/{id}     # Delete food item
-```
+| Method | Endpoint                    | Description            | Required Role |
+| ------ | --------------------------- | ---------------------- | ------------- |
+| GET    | `/alimentos/listar`         | List all food items    | USER or ADMIN |
+| GET    | `/alimentos/buscar/{id}`    | Search food item by ID | USER or ADMIN |
+| POST   | `/alimentos/criar`          | Create new food item   | ADMIN         |
+| PUT    | `/alimentos/atualizar/{id}` | Update food item       | ADMIN         |
+| DELETE | `/alimentos/deletar/{id}`   | Delete food item       | ADMIN         |
 
 ### Orders
 
-```http
-GET    /pedidos                    # List all orders
-POST   /pedidos                    # Create new order
-DELETE /pedidos/{id}               # Delete order
-PUT    /pedidos/{id}/status        # Update status
-POST   /pedidos/{id}/avancar-status # Automatic advancement
-```
+| Method | Endpoint                             | Description                  | Required Role |
+| ------ | ------------------------------------ | ---------------------------- | ------------- |
+| GET    | `/pedidos/listar`                    | List all orders              | ADMIN         |
+| POST   | `/pedidos/criar`                     | Create new order             | USER or ADMIN |
+| DELETE | `/pedidos/deletar/{id}`              | Delete order                 | ADMIN         |
+| PATCH  | `/pedidos/{pedidoId}/status`         | Update status manually       | ADMIN         |
+| PATCH  | `/pedidos/{pedidoId}/status/avancar` | Automatic status advancement | ADMIN         |
 
 ### User Profile
 
-```http
-GET /perfil/pedidos # User's order history
-```
+| Method | Endpoint          | Description          | Required Role |
+| ------ | ----------------- | -------------------- | ------------- |
+| GET    | `/perfil/pedidos` | User's order history | USER or ADMIN |
 
 ## 🔒 JWT Authentication
 
@@ -213,7 +213,7 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "joao@email.com",
+  "nome": "João Silva",
   "senha": "123456"
 }
 ```
@@ -221,7 +221,7 @@ Content-Type: application/json
 ### 3. Create Food Item
 
 ```bash
-POST /alimentos
+POST /alimentos/criar
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -235,7 +235,7 @@ Content-Type: application/json
 ### 4. Create Order
 
 ```bash
-POST /pedidos
+POST /pedidos/criar
 Authorization: Bearer {token}
 Content-Type: application/json
 
