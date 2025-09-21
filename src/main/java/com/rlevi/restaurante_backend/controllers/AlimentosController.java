@@ -1,9 +1,9 @@
 package com.rlevi.restaurante_backend.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
 import com.rlevi.restaurante_backend.model.Alimentos;
 import com.rlevi.restaurante_backend.service.AlimentosService;
 
@@ -29,8 +29,8 @@ public class AlimentosController {
 
     @PostMapping("/criar")
     public ResponseEntity<Alimentos> criarAlimento(@Valid @RequestBody Alimentos alimentos) {
-        alimentosService.criarAlimento(alimentos);
-        return ResponseEntity.ok(alimentos);
+        Alimentos alimentoCriado = alimentosService.criarAlimento(alimentos);
+        return new ResponseEntity<>(alimentoCriado, HttpStatus.CREATED);
     }
 
     @GetMapping("/listar")
@@ -41,28 +41,25 @@ public class AlimentosController {
 
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Alimentos> buscarAlimento(@PathVariable Long id) {
-        Optional<Alimentos> alimentos = alimentosService.buscarAlimento(id);
-        return ResponseEntity.ok(alimentos.get());
+        Alimentos alimento = alimentosService.buscarAlimento(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alimento", id));
+        return ResponseEntity.ok(alimento);
     }
 
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deletarAlimento(@PathVariable Long id) {
-        try {
-            alimentosService.deletarAlimento(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // Verificar se o alimento existe antes de deletar
+        alimentosService.buscarAlimento(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alimento", id));
+
+        alimentosService.deletarAlimento(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<Alimentos> atualizarAlimento(@PathVariable Long id, @Valid @RequestBody Alimentos alimentos) {
-        try {
-            alimentosService.atualizarAlimento(id, alimentos);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        Alimentos alimentoAtualizado = alimentosService.atualizarAlimento(id, alimentos);
+        return ResponseEntity.ok(alimentoAtualizado);
     }
 
 }
