@@ -1,5 +1,6 @@
 package com.rlevi.restaurante_backend.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class PedidosService {
             String enderecoCliente, String telefoneCliente, Usuarios usuario) {
         Alimentos alimento = alimentosRepository.findById(idAlimento)
                 .orElseThrow(() -> new RuntimeException("Alimento nao encontrado"));
-        Double precoTotal = alimento.getPrecoAlimento() * quantidade;
+        BigDecimal precoTotal = alimento.getPrecoAlimento().multiply(BigDecimal.valueOf(quantidade));
 
         Pedidos pedidos = Pedidos.builder()
                 .idAlimento(alimento)

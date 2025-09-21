@@ -1,9 +1,11 @@
 package com.rlevi.restaurante_backend.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -12,6 +14,6 @@ import lombok.AllArgsConstructor;
 public class AlimentosResponseDTO {
     private Long idAlimento;
     private String nomeAlimento;
-    private Double precoAlimento;
+    private BigDecimal precoAlimento;
     private String descricaoAlimento;
 }

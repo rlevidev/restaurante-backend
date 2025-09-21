@@ -1,5 +1,6 @@
 package com.rlevi.restaurante_backend.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.rlevi.restaurante_backend.model.StatusPedido;
@@ -20,9 +21,9 @@ import lombok.Setter;
 public class PedidosResponseDTO {
     private Long pedidoId;
     private String nomeAlimento;
-    private Double precoUnitario;
+    private BigDecimal precoUnitario;
     private Integer quantidade;
-    private Double precoTotal;
+    private BigDecimal precoTotal;
     private String nomeCliente;
     private String enderecoCliente;
     private String telefoneCliente;

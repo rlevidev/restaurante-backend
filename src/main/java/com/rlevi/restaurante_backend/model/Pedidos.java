@@ -1,5 +1,6 @@
 package com.rlevi.restaurante_backend.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -44,8 +45,8 @@ public class Pedidos {
     @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(name = "preco_total")
-    private Double precoTotal;
+    @Column(name = "preco_total", precision = 10, scale = 2)
+    private BigDecimal precoTotal;
 
     // Dados do cliente
     @Column(name = "nome_cliente", nullable = false)
