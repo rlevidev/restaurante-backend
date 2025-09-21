@@ -3,6 +3,7 @@ package com.rlevi.restaurante_backend.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rlevi.restaurante_backend.dto.PedidosRequestDTO;
 import com.rlevi.restaurante_backend.dto.PedidosResponseDTO;
+import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
 import com.rlevi.restaurante_backend.model.StatusPedido;
 import com.rlevi.restaurante_backend.model.Usuarios;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
@@ -38,7 +40,7 @@ public class PedidosController {
     public ResponseEntity<PedidosResponseDTO> criarPedido(@Valid @RequestBody PedidosRequestDTO pedidosRequestDTO,
             @AuthenticationPrincipal UserDetails userDetails) {
         Usuarios usuario = usuarioRepository.findByNome(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "nome", userDetails.getUsername()));
 
         PedidosResponseDTO pedido = pedidosService.criarPedido(
                 pedidosRequestDTO.getIdAlimento(),
@@ -47,7 +49,7 @@ public class PedidosController {
                 pedidosRequestDTO.getEnderecoCliente(),
                 pedidosRequestDTO.getTelefoneCliente(),
                 usuario);
-        return ResponseEntity.ok(pedido);
+        return new ResponseEntity<>(pedido, HttpStatus.CREATED);
     }
 
     @GetMapping("/listar")
@@ -58,12 +60,8 @@ public class PedidosController {
 
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deletarPedido(@PathVariable Long id) {
-        try {
-            pedidosService.deletarPedido(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        pedidosService.deletarPedido(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{pedidoId}/status")
