@@ -1,11 +1,12 @@
 package com.rlevi.restaurante_backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
 import com.rlevi.restaurante_backend.model.Alimentos;
 import com.rlevi.restaurante_backend.repository.AlimentosRepository;
 
@@ -14,19 +15,19 @@ public class AlimentosService {
     @Autowired
     private AlimentosRepository alimentosRepository;
 
-    public void criarAlimento(Alimentos alimentos) {
-        alimentosRepository.save(alimentos);
+    public Alimentos criarAlimento(Alimentos alimentos) {
+        return alimentosRepository.save(alimentos);
     }
 
-    public void atualizarAlimento(Long id, Alimentos alimentosAtualizados) {
-        alimentosRepository.findById(id).map(alimentoExistente -> {
+    public Alimentos atualizarAlimento(Long id, Alimentos alimentosAtualizados) {
+        return alimentosRepository.findById(id).map(alimentoExistente -> {
             alimentoExistente.setNomeAlimento(alimentosAtualizados.getNomeAlimento());
             alimentoExistente.setPrecoAlimento(alimentosAtualizados.getPrecoAlimento());
             alimentoExistente.setDescricaoAlimento(alimentosAtualizados.getDescricaoAlimento());
 
             return alimentosRepository.save(alimentoExistente);
         })
-        .orElseThrow(() -> new RuntimeException("Alimento nao encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Alimento", id));
     }
 
     public List<Alimentos> listarAlimentos() {
