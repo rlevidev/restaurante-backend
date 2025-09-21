@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Restaurante</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* Navbar */
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .navbar h1 { font-size: 28px; font-weight: 700; }
+        .navbar .nav-links { display: flex; gap: 25px; align-items: center; }
+        .navbar a { color: white; text-decoration: none; padding: 10px 15px; border-radius: 25px; transition: all 0.3s; font-weight: 500; }
+        .navbar a:hover, .navbar a.active { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+        .navbar button { background: none; border: none; color: white; padding: 10px 15px; border-radius: 25px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+        .navbar button:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+        .navbar button.logout-btn { background: rgba(202, 17, 35, 0); color: #ffffff; }
+        .navbar button.logout-btn:hover { background: rgba(202, 17, 35, 0.483); color: #ffffff; }
+
+        /* Hero */
+        .hero { text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; margin: 30px 0; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>'); }
+        .hero h2 { font-size: 3rem; margin-bottom: 20px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.3rem; margin-bottom: 30px; opacity: 0.9; }
+
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 40px; }
+        .menu-item { background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); overflow: hidden; transition: all 0.3s; position: relative; }
+        .menu-item:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        .menu-item img { width: 100%; height: 220px; object-fit: cover; }
+        .menu-item .content { padding: 25px; }
+        .menu-item h3 { font-size: 1.4rem; margin-bottom: 10px; color: #2c3e50; }
+        .menu-item .description { color: #7f8c8d; margin-bottom: 15px; line-height: 1.5; }
+        .menu-item .price { font-size: 1.5rem; font-weight: bold; color: #667eea; margin: 15px 0; }
+        .menu-item .actions { display: flex; gap: 15px; align-items: center; margin-top: 20px; }
+        .quantity-controls { display: flex; align-items: center; gap: 10px; background: #f8f9fa; border-radius: 25px; padding: 5px; }
+        .quantity-btn { width: 35px; height: 35px; border: none; background: #667eea; color: white; border-radius: 50%; cursor: pointer; font-size: 18px; transition: all 0.2s; }
+        .quantity-btn:hover { background: #5a6fd8; transform: scale(1.1); }
+        .quantity-display { min-width: 45px; text-align: center; font-weight: bold; color: #2c3e50; }
+
+        /* Cart */
+        .cart-icon { position: fixed; bottom: 25px; right: 25px; background: #667eea; color: white; border: none; border-radius: 50%; width: 65px; height: 65px; font-size: 26px; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.4); transition: all 0.3s; z-index: 1000; }
+        .cart-icon:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(102,126,234,0.6); }
+        .cart-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid white; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-content { background: white; margin: 5% auto; padding: 0; border-radius: 15px; width: 90%; max-width: 650px; max-height: 90vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1.5rem; font-weight: 600; }
+        .close { font-size: 32px; cursor: pointer; transition: all 0.2s; }
+        .close:hover { transform: scale(1.2); }
+        .modal-body { padding: 25px; max-height: 60vh; overflow-y: auto; }
+
+        /* Cart Items */
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #ecf0f1; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-info { flex: 1; }
+        .cart-item-info strong { display: block; color: #2c3e50; margin-bottom: 5px; }
+        .cart-item-info span { color: #7f8c8d; }
+        .cart-item-total { font-weight: bold; color: #667eea; }
+        .cart-total { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+        .cart-total strong { font-size: 1.3rem; color: #2c3e50; }
+
+        /* Checkout */
+        .checkout-section { background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); padding: 30px; margin: 30px 0; }
+        .checkout-summary { background: #f8f9fa; border-radius: 10px; padding: 25px; margin-bottom: 30px; }
+        .checkout-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #dee2e6; }
+        .checkout-total { font-size: 1.5rem; font-weight: bold; color: #667eea; text-align: right; margin: 20px 0; padding: 15px; background: white; border-radius: 8px; }
+
+        /* Form */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        .form-group input { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; transition: all 0.3s; }
+        .form-group input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); outline: none; }
+
+        /* Buttons */
+        .btn { padding: 15px 30px; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 15px rgba(102,126,234,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.5); }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; box-shadow: 0 4px 15px rgba(40,167,69,0.3); }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40,167,69,0.5); }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+
+        /* Orders */
+        .orders-grid { display: grid; gap: 25px; margin-top: 40px; }
+        .order-card { background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); padding: 25px; transition: all 0.3s; }
+        .order-card:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(0,0,0,0.15); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .order-header span:first-child { font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
+        .order-status { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .status-recebido { background: #fff3cd; color: #856404; }
+        .status-em_preparo { background: #cce5ff; color: #004085; }
+        .status-pronto { background: #d4edda; color: #155724; }
+        .status-a_caminho { background: #f8d7da; color: #721c24; }
+        .status-entregue { background: #d1ecf1; color: #0c5460; }
+
+        /* Messages */
+        .message { position: fixed; top: 25px; right: 25px; padding: 18px 25px; border-radius: 10px; z-index: 3000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: slideIn 0.3s ease-out; }
+        .message.success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+        .message.error { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; }
+
+        /* Loading */
+        .loading { text-align: center; padding: 60px; }
+        .loading div { width: 50px; height: 50px; margin: 0 auto 25px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Sections */
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container { flex-direction: column; gap: 20px; }
+            .navbar .nav-links { flex-wrap: wrap; justify-content: center; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .hero h2 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .modal-content { width: 95%; margin: 10% auto; }
+            .cart-icon { width: 55px; height: 55px; font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1>🍽️ Restaurante</h1>
+            <div class="nav-links">
+                <a href="#" id="home-link" class="active">Início</a>
+                <a href="#" id="menu-link">Cardápio</a>
+                <a href="#" id="orders-link">Perfil</a>
+                <button id="logout-btn" class="btn btn-secondary logout-btn">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Home -->
+        <section id="home-section" class="section active">
+            <div class="hero">
+                <h2>Bem-vindo ao Restaurante!</h2>
+                <p>Faça seu pedido de forma rápida e fácil</p>
+                <button id="order-now-btn" class="btn btn-primary">Fazer Pedido</button>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <section id="menu-section" class="section">
+            <h2 style="text-align: center; margin-bottom: 10px; color: #2c3e50;">Nosso Cardápio</h2>
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 40px;">Escolha seus pratos favoritos</p>
+            <div id="menu-grid" class="menu-grid">
+                <div class="loading">
+                    <div></div>
+                    <p>Carregando cardápio...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checkout -->
+        <section id="checkout-section" class="section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Finalizar Pedido</h2>
+            <div class="checkout-summary">
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">Resumo do Pedido</h3>
+                <div id="checkout-items"></div>
+                <div class="checkout-total" id="checkout-total">Total: R$ 0.00</div>
+            </div>
+
+            <div class="checkout-section">
+                <h3 style="margin-bottom: 25px; color: #2c3e50;">Informações para Entrega</h3>
+                <form id="checkout-form">
+                    <div class="form-group">
+                        <label for="checkout-nome">Nome Completo:</label>
+                        <input type="text" id="checkout-nome" name="nomeCliente" required placeholder="Digite seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-endereco">Endereço Completo:</label>
+                        <input type="text" id="checkout-endereco" name="enderecoCliente" required placeholder="Rua, número, bairro, cidade">
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-telefone">Telefone:</label>
+                        <input type="tel" id="checkout-telefone" name="telefoneCliente" required placeholder="(11) 99999-9999">
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center;">
+                        <button type="button" id="back-to-cart-btn" class="btn btn-secondary">Voltar ao Carrinho</button>
+                        <button type="submit" class="btn btn-success">Confirmar Pedido</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Orders -->
+        <section id="orders-section" class="section">
+            <h2 style="text-align: center; margin-bottom: 10px; color: #2c3e50;">Meus Pedidos</h2>
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 40px;">Acompanhe o status dos seus pedidos</p>
+            <div id="orders-container">
+                <div class="loading">
+                    <div></div>
+                    <p>Carregando pedidos...</p>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- Cart Icon -->
+    <button class="cart-icon" id="cart-icon">🛒<span class="cart-badge" id="cart-badge">0</span></button>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Seu Carrinho</h3>
+                <span class="close" id="cart-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items"></div>
+                <div class="cart-total" id="cart-total">Total: R$ 0.00</div>
+                <div style="display: flex; gap: 15px; margin-top: 25px; justify-content: center;">
+                    <button id="clear-cart-btn" class="btn btn-danger">Limpar</button>
+                    <button id="checkout-btn" class="btn btn-primary">Avançar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let cart = [];
+        let menuItems = [];
+        const API_BASE_URL = 'http://localhost:8080';
+
+        // DOM elements
+        const sections = {
+            home: document.getElementById('home-section'),
+            menu: document.getElementById('menu-section'),
+            orders: document.getElementById('orders-section'),
+            checkout: document.getElementById('checkout-section')
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkAuthentication();
+        });
+
+        function setupEventListeners() {
+            // Navigation
+            document.getElementById('home-link').addEventListener('click', () => switchSection('home'));
+            document.getElementById('menu-link').addEventListener('click', () => switchSection('menu'));
+            document.getElementById('orders-link').addEventListener('click', () => switchSection('orders'));
+
+            // Order now button
+            document.getElementById('order-now-btn').addEventListener('click', () => switchSection('menu'));
+
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', logout);
+
+            // Cart
+            document.getElementById('cart-icon').addEventListener('click', showCartModal);
+            document.getElementById('cart-close').addEventListener('click', closeModal);
+            document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
+            document.getElementById('checkout-btn').addEventListener('click', goToCheckout);
+
+            // Checkout
+            document.getElementById('checkout-form').addEventListener('submit', checkout);
+            document.getElementById('back-to-cart-btn').addEventListener('click', () => {
+                switchSection('home');
+            });
+
+            // Close modal when clicking outside
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    closeModal();
+                }
+            });
+        }
+
+        function checkAuthentication() {
+            const token = localStorage.getItem('bearerToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = getUserFromToken(token);
+            if (currentUser) {
+                loadMenuItems();
+                loadOrders();
+            } else {
+                logout();
+            }
+        }
+
+        function getUserFromToken(token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return { nome: payload.sub, role: payload.role };
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('bearerToken');
+            window.location.href = 'login.html';
+        }
+
+        function switchSection(sectionName) {
+            Object.values(sections).forEach(section => {
+                if (section) section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                if (link) link.classList.remove('active');
+            });
+
+            if (sections[sectionName]) {
+                sections[sectionName].classList.add('active');
+            }
+
+            const navLink = document.getElementById(sectionName + '-link');
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+
+            if (sectionName === 'menu') loadMenuItems();
+            if (sectionName === 'orders') loadOrders();
+        }
+
+        async function apiRequest(endpoint, options = {}) {
+            const token = localStorage.getItem('bearerToken');
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token && { 'Authorization': `Bearer ${token}` })
+                },
+                ...options
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    logout();
+                    throw new Error('Sessão expirada');
+                }
+                throw new Error(`Erro: ${response.status}`);
+            }
+
+            return response.json();
+        }
+
+        async function loadMenuItems() {
+            try {
+                menuItems = await apiRequest('/alimentos/listar');
+                displayMenuItems();
+            } catch (error) {
+                showError('Erro ao carregar cardápio: ' + error.message);
+            }
+        }
+
+        function displayMenuItems() {
+            const menuGrid = document.getElementById('menu-grid');
+            menuGrid.innerHTML = '';
+
+            menuItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'menu-item';
+                div.innerHTML = `
+                    <div style="width: 100%; height: 220px; background: linear-gradient(45deg, #f8f9fa, #e9ecef); display: flex; align-items: center; justify-content: center; font-size: 4rem; border-radius: 15px 15px 0 0;">🍽️</div>
+                    <div class="content">
+                        <h3>${item.nomeAlimento}</h3>
+                        <p class="description">${item.descricaoAlimento || 'Delicioso prato preparado com ingredientes frescos'}</p>
+                        <div class="price">R$ ${parseFloat(item.precoAlimento).toFixed(2)}</div>
+                        <div class="actions">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.idAlimento}, -1)">-</button>
+                                <span class="quantity-display" id="quantity-${item.idAlimento}">0</span>
+                                <button class="quantity-btn" onclick="changeQuantity(${item.idAlimento}, 1)">+</button>
+                            </div>
+                            <button class="btn btn-primary" onclick="addToCart(${item.idAlimento})">Adicionar</button>
+                        </div>
+                    </div>
+                `;
+                menuGrid.appendChild(div);
+            });
+        }
+
+        function changeQuantity(itemId, delta) {
+            const quantityElement = document.getElementById(`quantity-${itemId}`);
+            let quantity = parseInt(quantityElement.textContent) + delta;
+            quantity = Math.max(0, quantity);
+            quantityElement.textContent = quantity;
+        }
+
+        function addToCart(itemId) {
+            const quantityElement = document.getElementById(`quantity-${itemId}`);
+            const quantity = parseInt(quantityElement.textContent);
+
+            if (quantity === 0) {
+                showMessage('Selecione uma quantidade primeiro', 'error');
+                return;
+            }
+
+            const item = menuItems.find(item => item.idAlimento === itemId);
+            const existingItem = cart.find(cartItem => cartItem.id === itemId);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: item.idAlimento,
+                    nomeAlimento: item.nomeAlimento,
+                    precoAlimento: item.precoAlimento,
+                    quantity: quantity
+                });
+            }
+
+            quantityElement.textContent = '0';
+            updateCartBadge();
+            showMessage(`${item.nomeAlimento} adicionado ao carrinho!`, 'success');
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.textContent = totalItems;
+        }
+
+        function showCartModal() {
+            const modal = document.getElementById('cart-modal');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+
+            cartItems.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 40px;">Seu carrinho está vazio</p>';
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = item.precoAlimento * item.quantity;
+                    cartItems.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <strong>${item.nomeAlimento}</strong>
+                                <span>${item.quantity} x R$ ${parseFloat(item.precoAlimento).toFixed(2)}</span>
+                            </div>
+                            <div>
+                                <span class="cart-item-total">R$ ${itemTotal.toFixed(2)}</span>
+                                <button onclick="removeFromCart(${item.id})" style="margin-left: 15px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px;">×</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.precoAlimento * item.quantity), 0);
+            cartTotal.innerHTML = `<strong>Total: R$ ${total.toFixed(2)}</strong>`;
+
+            modal.style.display = 'block';
+        }
+
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            updateCartBadge();
+            showCartModal();
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCartBadge();
+            showCartModal();
+        }
+
+        function goToCheckout() {
+            if (cart.length === 0) {
+                showMessage('Adicione itens ao carrinho primeiro', 'error');
+                return;
+            }
+
+            closeModal();
+            displayCheckoutItems();
+            switchSection('checkout');
+        }
+
+        function displayCheckoutItems() {
+            const checkoutItems = document.getElementById('checkout-items');
+            const checkoutTotal = document.getElementById('checkout-total');
+
+            checkoutItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.precoAlimento * item.quantity;
+                total += itemTotal;
+
+                checkoutItems.innerHTML += `
+                    <div class="checkout-item">
+                        <span>${item.nomeAlimento} x${item.quantity}</span>
+                        <span>R$ ${itemTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            checkoutTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
+
+            // Preencher campos com dados do usuário
+            document.getElementById('checkout-nome').value = currentUser?.nome || '';
+        }
+
+        async function checkout(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const nomeCliente = formData.get('nomeCliente').trim();
+            const enderecoCliente = formData.get('enderecoCliente').trim();
+            let telefone = formData.get('telefoneCliente').trim();
+
+            // Validações no frontend
+            if (!nomeCliente || nomeCliente.length < 2) {
+                showError('Nome deve ter pelo menos 2 caracteres');
+                return;
+            }
+
+            if (!enderecoCliente || enderecoCliente.length < 10) {
+                showError('Endereço deve ter pelo menos 10 caracteres');
+                return;
+            }
+
+            if (!telefone) {
+                showError('Telefone é obrigatório');
+                return;
+            }
+
+            // Formatar telefone para o padrão brasileiro esperado pelo backend
+            telefone = telefone.replace(/\D/g, ''); // Remove tudo que não é dígito
+            if (telefone.length === 11) {
+                telefone = `(${telefone.slice(0, 2)}) ${telefone.slice(2, 7)}-${telefone.slice(7)}`;
+            } else if (telefone.length === 10) {
+                telefone = `(${telefone.slice(0, 2)}) ${telefone.slice(2, 6)}-${telefone.slice(6)}`;
+            } else {
+                showError('Telefone deve ter 10 ou 11 dígitos');
+                return;
+            }
+
+            // Validar itens do carrinho
+            const itensValidos = cart.filter(item => {
+                if (!item.id || item.quantity <= 0) {
+                    console.error('Item inválido no carrinho:', item);
+                    return false;
+                }
+                return true;
+            });
+
+            if (itensValidos.length === 0) {
+                showError('Carrinho vazio ou com itens inválidos');
+                return;
+            }
+
+            // Garantir que os IDs são números válidos
+            const itensFormatados = itensValidos.map(item => ({
+                idAlimento: parseInt(item.id, 10),
+                quantidade: parseInt(item.quantity, 10)
+            }));
+
+            const orderData = {
+                nomeCliente: nomeCliente,
+                enderecoCliente: enderecoCliente,
+                telefoneCliente: telefone,
+                itens: itensFormatados
+            };
+
+            console.log('Enviando pedido:', orderData);
+            console.log('Itens do pedido:', orderData.itens);
+
+            try {
+                const order = await apiRequest('/pedidos/criar', {
+                    method: 'POST',
+                    body: JSON.stringify(orderData)
+                });
+
+                console.log('Pedido criado:', order);
+                clearCart();
+                showMessage('Pedido realizado com sucesso!', 'success');
+
+                console.log('Redirecionando para pedidos após checkout...');
+                console.log('Executando switchSection para orders');
+                switchSection('orders');
+                loadOrders();
+            } catch (error) {
+                console.error('Erro no checkout:', error);
+                showError('Erro ao finalizar pedido: ' + error.message);
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const orders = await apiRequest('/perfil/pedidos');
+                displayOrders(orders);
+            } catch (error) {
+                showError('Erro ao carregar pedidos: ' + error.message);
+            }
+        }
+
+        function displayOrders(orders) {
+            const ordersContainer = document.getElementById('orders-container');
+            ordersContainer.innerHTML = '';
+
+            if (!orders || orders.length === 0) {
+                ordersContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 60px; font-size: 1.1rem;">Você ainda não fez nenhum pedido.</p>';
+                return;
+            }
+
+            const ordersGrid = document.createElement('div');
+            ordersGrid.className = 'orders-grid';
+
+            orders.forEach(order => {
+                const div = document.createElement('div');
+                div.className = 'order-card';
+
+                const statusClass = `status-${order.status?.toLowerCase().replace('_', '') || 'recebido'}`;
+                const statusText = getStatusText(order.status);
+
+                div.innerHTML = `
+                    <div class="order-header">
+                        <span>Pedido #${order.pedidoId || order.id}</span>
+                        <span class="order-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <p style="margin-bottom: 8px;"><strong>Data:</strong> ${formatDate(order.dataCriacao || order.data)}</p>
+                        <p style="margin-bottom: 8px;"><strong>Total:</strong> R$ ${parseFloat(order.precoTotal || order.total || 0).toFixed(2)}</p>
+                        <p style="margin-bottom: 8px;"><strong>Cliente:</strong> ${order.nomeCliente}</p>
+                        <p style="margin-bottom: 8px;"><strong>Endereço:</strong> ${order.enderecoCliente}</p>
+                        <p><strong>Telefone:</strong> ${order.telefoneCliente}</p>
+                    </div>
+                    <div>
+                        <strong>Itens:</strong>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            ${order.itens ? order.itens.map(item => `
+                                <li>${item.nomeAlimento || item.alimento?.nomeAlimento} x${item.quantidade} - R$ ${parseFloat(item.subtotal || (item.precoUnitario * item.quantidade)).toFixed(2)}</li>
+                            `).join('') : '<li>Nenhum item encontrado</li>'}
+                        </ul>
+                    </div>
+                `;
+
+                ordersGrid.appendChild(div);
+            });
+
+            ordersContainer.appendChild(ordersGrid);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'RECEBIDO': 'Recebido',
+                'NA_FILA': 'Na Fila',
+                'EM_PREPARO': 'Em Preparo',
+                'PRONTO': 'Pronto',
+                'A_CAMINHO': 'A Caminho',
+                'ENTREGUE': 'Entregue'
+            };
+            return statusMap[status] || status || 'Recebido';
+        }
+
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return 'Data inválida';
+            }
+        }
+
+
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
+        }
+
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showError(message) {
+            showMessage(message, 'error');
+        }
+    </script>
+</body>
+</html>

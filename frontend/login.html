@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Login - Restaurante</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            outline: none;
+            background: white;
+        }
+
+        .form-group input::placeholder {
+            color: #adb5bd;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+            color: #7f8c8d;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e9ecef;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading div {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto 15px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🍽️ Restaurante</h1>
+            <p>Sistema de Pedidos Online</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" id="login-tab">Entrar</div>
+            <div class="tab" id="register-tab">Cadastrar</div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="tab-content active" id="login-content">
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-nome">Nome de Usuário:</label>
+                    <input type="text" id="login-nome" name="nome" required placeholder="Digite seu nome de usuário">
+                </div>
+                <div class="form-group">
+                    <label for="login-senha">Senha:</label>
+                    <input type="password" id="login-senha" name="senha" required placeholder="Digite sua senha">
+                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div class="tab-content" id="register-content">
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-nome">Nome de Usuário:</label>
+                    <input type="text" id="register-nome" name="nome" required placeholder="Escolha um nome de usuário">
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email:</label>
+                    <input type="email" id="register-email" name="email" required placeholder="Digite seu email">
+                </div>
+                <div class="form-group">
+                    <label for="register-senha">Senha:</label>
+                    <input type="password" id="register-senha" name="senha" required placeholder="Digite uma senha">
+                </div>
+                <div class="form-group">
+                    <label for="register-confirmar-senha">Confirmar Senha:</label>
+                    <input type="password" id="register-confirmar-senha" name="confirmarSenha" required placeholder="Confirme sua senha">
+                </div>
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </form>
+        </div>
+
+        <div class="register-link">
+            <p>Para testar: use "admin" / "admin" para login</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
+        // Tab switching
+        document.getElementById('login-tab').addEventListener('click', () => switchTab('login'));
+        document.getElementById('register-tab').addEventListener('click', () => switchTab('register'));
+
+        // Form submissions
+        document.getElementById('login-form').addEventListener('submit', login);
+        document.getElementById('register-form').addEventListener('submit', register);
+
+        function switchTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            document.getElementById(tab + '-tab').classList.add('active');
+            document.getElementById(tab + '-content').classList.add('active');
+        }
+
+        async function apiRequest(endpoint, options = {}) {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                ...options
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(error || `Erro: ${response.status}`);
+            }
+
+            return response.json();
+        }
+
+        async function login(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const loginData = {
+                nome: formData.get('nome'),
+                senha: formData.get('senha')
+            };
+
+            try {
+                showLoading(true);
+                const response = await apiRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify(loginData)
+                });
+
+                localStorage.setItem('bearerToken', response.token);
+                window.location.href = 'index.html';
+            } catch (error) {
+                showMessage('Erro no login: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function register(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const senha = formData.get('senha');
+            const confirmarSenha = formData.get('confirmarSenha');
+
+            if (senha !== confirmarSenha) {
+                showMessage('As senhas não coincidem', 'error');
+                return;
+            }
+
+            const registerData = {
+                nome: formData.get('nome'),
+                email: formData.get('email'),
+                senha: senha
+            };
+
+            try {
+                showLoading(true);
+                const response = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify(registerData)
+                });
+
+                showMessage('Cadastro realizado com sucesso! Faça o login.', 'success');
+                setTimeout(() => switchTab('login'), 2000);
+            } catch (error) {
+                showMessage('Erro no cadastro: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showMessage(message, type = 'success') {
+            // Remove existing messages
+            const existingMessage = document.querySelector('.message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+
+            const container = document.querySelector('.login-container');
+            container.insertBefore(messageDiv, container.children[1]);
+
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            const submitBtn = document.activeElement;
+            if (show) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="loading"><div></div>Processando...</div>';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = submitBtn.value === 'Entrar' ? 'Entrar' : 'Cadastrar';
+            }
+        }
+
+        // Auto-focus first input
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('login-nome').focus();
+        });
+    </script>
+</body>
+</html>
