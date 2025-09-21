@@ -79,18 +79,20 @@ src/
 
 ### 📦 Sistema de Pedidos
 
-- Criar pedidos com dados do cliente
-- Listar todos os pedidos (admin)
-- Atualizar status dos pedidos
-- Avanço automático de status
-- Exclusão de pedidos
-- Controle de status: RECEBIDO → NA_FILA → EM_PREPARO → PRONTO → A_CAMINHO → ENTREGUE
+- **Pedidos Múltiplos**: Criar pedidos com múltiplos itens alimentares
+- **Cálculo Automático**: Total calculado automaticamente com precisão BigDecimal
+- **Gestão Completa**: Listar, atualizar e gerenciar pedidos (admin)
+- **Controle de Status**: Avanço manual ou automático de status
+- **Transações Seguras**: Processamento transacional completo
+- **Status Flow**: RECEBIDO → NA_FILA → EM_PREPARO → PRONTO → A_CAMINHO → ENTREGUE
+- **Histórico Detalhado**: Rastreamento completo de itens e quantidades
 
 ### 👤 Perfil do Usuário
 
-- Visualizar histórico de pedidos
-- Gerenciar dados pessoais
-- Acompanhar status dos pedidos
+- **Histórico Detalhado**: Visualizar pedidos com todos os itens e quantidades
+- **Informações Completas**: Dados do cliente, preços unitários e subtotais
+- **Rastreamento**: Acompanhar status de cada pedido em tempo real
+- **Dados Pessoais**: Gerenciar informações do perfil
 
 ## 🔧 Como Executar Localmente
 
@@ -232,7 +234,7 @@ Content-Type: application/json
 }
 ```
 
-### 4. Criar Pedido
+### 4. Criar Pedido (Múltiplos Itens)
 
 ```bash
 POST /pedidos/criar
@@ -240,9 +242,17 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "alimentoId": 1,
-  "quantidade": 2,
-  "nomeCliente": "Maria Santos",
+  "itens": [
+    {
+      "alimentoId": 1,
+      "quantidade": 2
+    },
+    {
+      "alimentoId": 3,
+      "quantidade": 1
+    }
+  ],
+  "nomeCliente": "Levi",
   "enderecoCliente": "Rua das Flores, 123",
   "telefoneCliente": "(11) 99999-9999"
 }

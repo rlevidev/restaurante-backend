@@ -79,18 +79,20 @@ src/
 
 ### 📦 Order System
 
-- Create orders with customer data
-- List all orders (admin)
-- Update order status
-- Automatic status advancement
-- Order deletion
-- Status control: RECEIVED → IN_QUEUE → PREPARING → READY → ON_THE_WAY → DELIVERED
+- **Multiple Items**: Create orders with multiple food items
+- **Automatic Calculation**: Total calculated automatically with BigDecimal precision
+- **Complete Management**: List, update and manage orders (admin)
+- **Status Control**: Manual or automatic status advancement
+- **Secure Transactions**: Complete transactional processing
+- **Status Flow**: RECEIVED → IN_QUEUE → PREPARING → READY → ON_THE_WAY → DELIVERED
+- **Detailed History**: Complete tracking of items and quantities
 
 ### 👤 User Profile
 
-- View order history
-- Manage personal data
-- Track order status
+- **Detailed History**: View orders with all items and quantities
+- **Complete Information**: Customer data, unit prices and subtotals
+- **Tracking**: Follow each order status in real-time
+- **Personal Data**: Manage profile information
 
 ## 🔧 How to Run Locally
 
@@ -232,7 +234,7 @@ Content-Type: application/json
 }
 ```
 
-### 4. Create Order
+### 4. Create Order (Multiple Items)
 
 ```bash
 POST /pedidos/criar
@@ -240,8 +242,16 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "alimentoId": 1,
-  "quantidade": 2,
+  "itens": [
+    {
+      "alimentoId": 1,
+      "quantidade": 2
+    },
+    {
+      "alimentoId": 3,
+      "quantidade": 1
+    }
+  ],
   "nomeCliente": "Maria Santos",
   "enderecoCliente": "Rua das Flores, 123",
   "telefoneCliente": "(11) 99999-9999"
@@ -284,10 +294,7 @@ This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) f
 
 ## 👨‍💻 Author
 
-**R. Levi**
-
 - GitHub: [@rlevidev](https://github.com/rlevidev)
-- LinkedIn: [Your LinkedIn]
 
 ## Contributors ✨
 
@@ -306,4 +313,3 @@ All contributions are very welcome! Every contributor helps make the project bet
 If you have questions or suggestions:
 
 - Open an [issue](https://github.com/rlevidev/restaurante-backend/issues) on GitHub
-- Contact us by email: your-email@example.com
