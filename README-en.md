@@ -1,315 +1,233 @@
-# 🍽️ Restaurant Backend
+# 🍽️ Restaurant Backend + Frontend
 
-[![Java](https://img.shields.io/badge/Java-17-orange)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen)](https://spring.io/projects/spring-boot)
-[![Maven](https://img.shields.io/badge/Maven-3.6+-blue)](https://maven.apache.org/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub last commit](https://img.shields.io/github/last-commit/rlevidev/restaurante-backend)](https://github.com/rlevidev/restaurante-backend/commits/main)
-[![GitHub contributors](https://img.shields.io/github/contributors/rlevidev/restaurante-backend)](https://github.com/rlevidev/restaurante-backend/graphs/contributors)
+Complete order management system for restaurants, developed with **Spring Boot** (backend) and **HTML/CSS/JavaScript** (frontend).
 
-[Portuguese version](./README.md)
+## 📋 Overview
 
-## About the Project 🎯
+This project offers a complete solution for restaurants that want to manage online orders, including:
 
-A complete REST API for restaurant management system developed with Spring Boot, offering authentication, menu management, and order system functionalities. Designed to facilitate restaurant management with a robust and scalable architecture.
-
-## Project Roadmap 🚧
-
-- [x] **JWT Authentication System** - Secure authentication with tokens
-- [x] **Menu Management** - Complete CRUD for food items
-- [x] **Order System** - Order control with status tracking
-- [x] **User Profile** - Order history per user
-- [ ] **Payment Integration** - Online payment system
-- [ ] **Real-time Notifications** - WebSocket for updates
-- [ ] **Admin Dashboard** - Management interface
-- [ ] **Delivery API** - Integration with delivery apps
-
-## 🏗️ Architecture
-
-```
-src/
-├── main/
-│   ├── java/com/rlevi/restaurante_backend/
-│   │   ├── config/          # Security and message configurations
-│   │   ├── controllers/     # REST API controllers
-│   │   ├── dto/            # Data Transfer Objects
-│   │   ├── model/          # JPA database entities
-│   │   ├── repository/     # Data repositories
-│   │   ├── security/       # JWT and Spring Security configurations
-│   │   └── service/        # Application business logic
-│   └── resources/
-│       └── application.properties
-```
+- **Backend REST API** with Spring Boot
+- **Modern Web Frontend** responsive design
+- **JWT Authentication System**
+- **Dynamic Menu Management**
+- **Complete Order System**
+- **Administrative Interface** for managing orders
 
 ## 🚀 Technologies Used
 
-![Static Badge](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Static Badge](https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot)
-![Static Badge](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Static Badge](https://img.shields.io/badge/H2-003545?style=for-the-badge&logo=h2&logoColor=white)
-![Static Badge](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+### Backend
 
-- **Java 17** - Main programming language
-- **Spring Boot 3.5.6** - Development framework
-- **Spring Security** - Authentication and authorization
-- **Spring Data JPA** - Data persistence
-- **JWT** - Secure authentication tokens
-- **H2 Database** - Development database
-- **PostgreSQL** - Production database
-- **Lombok** - Boilerplate code reduction
-- **Maven** - Dependency management
-- **Bean Validation** - Data validation
+- **Java 17**
+- **Spring Boot 3.5.6**
+- **Spring Security** (JWT)
+- **Spring Data JPA**
+- **H2 Database** (development)
+- **PostgreSQL** (production)
+- **Maven**
 
-## 📋 Features
+### Frontend
 
-### 🔐 Authentication System
+- **HTML5**
+- **CSS3** (Flexbox, Grid, Gradients)
+- **JavaScript ES6+** (Vanilla)
+- **Fetch API**
+- **LocalStorage**
 
-- New user registration with validation
-- Secure JWT login
-- Route protection with Spring Security
-- Password encryption with BCrypt
+## 📁 Project Structure
 
-### 🍕 Menu Management
+```
+restaurant-backend/
+├── src/
+│   ├── main/
+│   │   ├── java/com/rlevi/restaurant_backend/
+│   │   │   ├── config/          # Security, CORS configurations
+│   │   │   ├── controllers/     # REST endpoints
+│   │   │   ├── dto/            # Data Transfer Objects
+│   │   │   ├── exception/      # Error handling
+│   │   │   ├── model/          # JPA entities
+│   │   │   ├── repository/     # Repositories
+│   │   │   ├── security/       # JWT, Authentication
+│   │   │   └── service/        # Business logic
+│   │   └── resources/          # application.properties
+│   └── test/                   # Unit tests
+├── frontend/
+│   ├── index.html             # Main page
+│   ├── login.html             # Authentication
+│   └── README-frontend.md     # Frontend docs
+├── pom.xml                    # Maven dependencies
+└── README.md                  # This file
+```
 
-- Create new menu items
-- List all available food items
-- Search specific food by ID
-- Update food information
-- Remove items from menu
-
-### 📦 Order System
-
-- **Multiple Items**: Create orders with multiple food items
-- **Automatic Calculation**: Total calculated automatically with BigDecimal precision
-- **Complete Management**: List, update and manage orders (admin)
-- **Status Control**: Manual or automatic status advancement
-- **Secure Transactions**: Complete transactional processing
-- **Status Flow**: RECEIVED → IN_QUEUE → PREPARING → READY → ON_THE_WAY → DELIVERED
-- **Detailed History**: Complete tracking of items and quantities
-
-### 👤 User Profile
-
-- **Detailed History**: View orders with all items and quantities
-- **Complete Information**: Customer data, unit prices and subtotals
-- **Tracking**: Follow each order status in real-time
-- **Personal Data**: Manage profile information
-
-## 🔧 How to Run Locally
+## 🛠️ Installation and Configuration
 
 ### Prerequisites
 
-- [Java 17+](https://adoptium.net/)
-- [Maven 3.6+](https://maven.apache.org/)
-- [Git](https://git-scm.com/)
+- **Java 17** or higher
+- **Maven 3.6+**
+- **Git**
+- Modern web browser
 
-### Steps to Run
-
-1. **Clone the repository**
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/rlevidev/restaurante-backend.git
 cd restaurante-backend
 ```
 
-2. **Install dependencies**
+### 2. Backend - Configuration
+
+#### Development (H2)
 
 ```bash
-./mvnw clean install
+# Compile and run
+./mvnw clean compile spring-boot:run
 ```
 
-3. **Run the application**
+Backend will be available at: `http://localhost:8080`
+
+#### Production (PostgreSQL)
+
+1. Configure PostgreSQL in `application-postgres.properties`
+2. Run with production profile:
 
 ```bash
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
 ```
 
-4. **Access the application**
+### 3. Frontend - Access
 
-- **API Base**: `http://localhost:8080`
-- **H2 Console**: `http://localhost:8080/h2-console`
-  - **JDBC URL**: `jdbc:h2:file:./restaurante-desenvolvimento`
-  - **Username**: `sa`
-  - **Password**: _(leave blank)_
+Open `frontend/index.html` in browser or use a local server:
 
-## 📡 API Endpoints
+```bash
+# Python
+python -m http.server 3000
+
+# Node.js
+npx serve frontend
+
+# Or simply open index.html in browser
+```
+
+## 🔐 Authentication
+
+### First Access
+
+1. **Test Login**: `admin` / `admin`
+2. **Registration**: Create new users through the "Register" tab
+
+### Available Users
+
+- **admin/admin**: Administrator (can manage everything)
+- **Regular users**: Created via registration
+
+## 📱 Features
+
+### 👤 For Customers
+
+- **🍽️ Interactive Menu**: View foods with prices
+- **🛒 Shopping Cart**: Add/remove items
+- **📝 Place Orders**: Complete delivery form
+- **📋 Track Orders**: History and real-time status
+- **👤 Profile**: Personal information
+
+### 👨‍💼 For Administrators
+
+- **📊 Manage Orders**: View and update status
+- **🍕 Manage Menu**: CRUD operations for foods
+- **👥 Manage Users**: Access control
+
+## 🎯 API Endpoints
 
 ### Authentication
 
-| Method | Endpoint         | Description       | Required Role |
-| ------ | ---------------- | ----------------- | ------------- |
-| POST   | `/auth/register` | Register new user | None          |
-| POST   | `/auth/login`    | Login             | None          |
+- `POST /auth/login` - Login
+- `POST /auth/register` - Registration
 
-### Food Items (Menu)
+### Foods
 
-| Method | Endpoint                    | Description            | Required Role |
-| ------ | --------------------------- | ---------------------- | ------------- |
-| GET    | `/alimentos/listar`         | List all food items    | USER or ADMIN |
-| GET    | `/alimentos/buscar/{id}`    | Search food item by ID | USER or ADMIN |
-| POST   | `/alimentos/criar`          | Create new food item   | ADMIN         |
-| PUT    | `/alimentos/atualizar/{id}` | Update food item       | ADMIN         |
-| DELETE | `/alimentos/deletar/{id}`   | Delete food item       | ADMIN         |
+- `GET /alimentos/listar` - List all
+- `POST /alimentos/criar` - Create food
+- `PUT /alimentos/atualizar/{id}` - Update
+- `DELETE /alimentos/deletar/{id}` - Delete
 
 ### Orders
 
-| Method | Endpoint                             | Description                  | Required Role |
-| ------ | ------------------------------------ | ---------------------------- | ------------- |
-| GET    | `/pedidos/listar`                    | List all orders              | ADMIN         |
-| POST   | `/pedidos/criar`                     | Create new order             | USER or ADMIN |
-| DELETE | `/pedidos/deletar/{id}`              | Delete order                 | ADMIN         |
-| PATCH  | `/pedidos/{pedidoId}/status`         | Update status manually       | ADMIN         |
-| PATCH  | `/pedidos/{pedidoId}/status/avancar` | Automatic status advancement | ADMIN         |
+- `POST /pedidos/criar` - Create order
+- `GET /pedidos/listar` - List all (admin)
+- `PATCH /pedidos/{id}/status` - Update status
+- `DELETE /pedidos/deletar/{id}` - Cancel order
 
-### User Profile
+### Profile
 
-| Method | Endpoint          | Description          | Required Role |
-| ------ | ----------------- | -------------------- | ------------- |
-| GET    | `/perfil/pedidos` | User's order history | USER or ADMIN |
+- `GET /perfil` - User data
+- `GET /perfil/pedidos` - User orders
 
-## 🔒 JWT Authentication
+## 🎨 Frontend - Technical Details
 
-The API uses JWT-based authentication. After logging in, include the token in the request headers:
+### Structure
 
-```http
-Authorization: Bearer {your-jwt-token}
-```
+- **Single Page Application** (SPA) vanilla
+- **Modular components** via JavaScript functions
+- **Global state** managed via variables
+- **Responsive** for desktop, tablet and mobile
 
-## 🗄️ Database Configuration
+### Design System
 
-### Development (H2)
+- **Colors**: Blue-purple gradient (#667eea → #764ba2)
+- **Typography**: Segoe UI with fallbacks
+- **Shadows**: Box-shadow for depth
+- **Animations**: Smooth transitions (0.3s)
 
-```properties
-spring.datasource.url=jdbc:h2:file:./restaurante-desenvolvimento
-spring.datasource.username=sa
-spring.datasource.password=
-```
+### Navigation
 
-### Production (PostgreSQL)
+- **Home**: Welcome page
+- **Menu**: Food selection
+- **Profile**: Order history
+- **Logout**: Red colored logout
 
-```properties
-spring.profiles.active=postgres
-spring.datasource.url=jdbc:postgresql://localhost:5432/restaurante
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-```
+## 📊 Order Status
 
-## 📝 Usage Examples
+- **RECEIVED**: Order awaiting processing
+- **IN_PREPARATION**: Being prepared in kitchen
+- **READY**: Ready for delivery
+- **ON_THE_WAY**: On the way to customer
+- **DELIVERED**: Successfully delivered
 
-### 1. Register User
+## 🔧 Development
 
-```bash
-POST /auth/register
-Content-Type: application/json
-
-{
-  "nome": "João Silva",
-  "email": "joao@email.com",
-  "senha": "123456"
-}
-```
-
-### 2. Login
+### Run Tests
 
 ```bash
-POST /auth/login
-Content-Type: application/json
-
-{
-  "nome": "João Silva",
-  "senha": "123456"
-}
+./mvnw test
 ```
 
-### 3. Create Food Item
+### Production Build
 
 ```bash
-POST /alimentos/criar
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "nomeAlimento": "Pizza Margherita",
-  "precoAlimento": 29.90,
-  "descricaoAlimento": "Traditional pizza with tomato sauce, mozzarella and basil"
-}
+./mvnw clean package
+java -jar target/restaurante-backend-0.0.1-SNAPSHOT.jar
 ```
 
-### 4. Create Order (Multiple Items)
+### Debug Logs
 
-```bash
-POST /pedidos/criar
-Authorization: Bearer {token}
-Content-Type: application/json
+Frontend includes detailed console logs for debugging.
 
-{
-  "itens": [
-    {
-      "alimentoId": 1,
-      "quantidade": 2
-    },
-    {
-      "alimentoId": 3,
-      "quantidade": 1
-    }
-  ],
-  "nomeCliente": "Maria Santos",
-  "enderecoCliente": "Rua das Flores, 123",
-  "telefoneCliente": "(11) 99999-9999"
-}
-```
+## 🤝 Contributing
 
-## 🤝 How to Contribute
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Contributions are always welcome! Check our [complete contribution guide](./CONTRIBUTING.md) to learn how to participate.
+## 📝 License
 
-Here are some ways to contribute:
-
-### Types of Contributions
-
-- 🐛 **Bug Fixes**: Identify and fix issues
-- ✨ **New Features**: Implement new resources
-- 📚 **Documentation**: Improve documentation and guides
-- 🧪 **Tests**: Add or improve tests
-- 🎨 **UI/UX**: Improve interfaces and user experience
-
-### Contribution Process
-
-1. **Fork** the project
-2. **Clone** your fork: `git clone https://github.com/your-username/restaurante-backend.git`
-3. **Create a branch** for your feature: `git checkout -b feature/new-feature`
-4. **Make your changes** and commit: `git commit -m 'Add new feature'`
-5. **Push** to your branch: `git push origin feature/new-feature`
-6. **Open a Pull Request** in the original repository
-
-### Guidelines
-
-- Follow existing code standards
-- Add tests for new features
-- Update documentation when necessary
-- Keep commits small and descriptive
-
-## 📄 License
-
-This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) file for more details.
-
-## 👨‍💻 Author
-
-- GitHub: [@rlevidev](https://github.com/rlevidev)
-
-## Contributors ✨
-
-<a href="https://github.com/rlevidev/restaurante-backend/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=rlevidev/restaurante-backend&anon=0&columns=20&max=100" />
-</a>
-
-All contributions are very welcome! Every contributor helps make the project better.
-
----
-
-⭐ **If this project helped you, consider giving it a star!**
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## 📞 Support
 
-If you have questions or suggestions:
+For support, open an issue on GitHub or contact the development team.
 
-- Open an [issue](https://github.com/rlevidev/restaurante-backend/issues) on GitHub
+---
+
+**Developed with ❤️ for restaurants that want to innovate in online service.**

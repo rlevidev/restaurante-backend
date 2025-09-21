@@ -1,315 +1,229 @@
-# 🍽️ Restaurante Backend
+# 🍽️ Restaurant Backend + Frontend
 
-[![Java](https://img.shields.io/badge/Java-17-orange)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen)](https://spring.io/projects/spring-boot)
-[![Maven](https://img.shields.io/badge/Maven-3.6+-blue)](https://maven.apache.org/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub last commit](https://img.shields.io/github/last-commit/rlevidev/restaurante-backend)](https://github.com/rlevidev/restaurante-backend/commits/main)
-[![GitHub contributors](https://img.shields.io/github/contributors/rlevidev/restaurante-backend)](https://github.com/rlevidev/restaurante-backend/graphs/contributors)
+Complete order management system for restaurants, developed with **Spring Boot** (backend) and **HTML/CSS/JavaScript** (frontend).
 
-[English version](./README-en.md)
+## 📋 Overview
 
-## Sobre o Projeto 🎯
+This project offers a complete solution for restaurants that want to manage online orders, including:
 
-Uma API REST completa para sistema de restaurante desenvolvida com Spring Boot, oferecendo funcionalidades de autenticação, gerenciamento de cardápio e sistema de pedidos. Projetada para facilitar a gestão de restaurantes com uma arquitetura robusta e escalável.
+- **Backend REST API** with Spring Boot
+- **Modern Web Frontend** responsive design
+- **JWT Authentication System**
+- **Dynamic Menu Management**
+- **Complete Order System**
+- **Administrative Interface** for managing orders
 
-## Roadmap do Projeto 🚧
+## 🚀 Technologies Used
 
-- [x] **Sistema de Autenticação JWT** - Autenticação segura com tokens
-- [x] **Gerenciamento de Cardápio** - CRUD completo de alimentos
-- [x] **Sistema de Pedidos** - Controle de pedidos com status
-- [x] **Perfil do Usuário** - Histórico de pedidos por usuário
-- [ ] **Integração com Pagamentos** - Sistema de pagamento online
-- [ ] **Notificações em Tempo Real** - WebSocket para atualizações
-- [ ] **Dashboard Administrativo** - Interface para gestão
-- [ ] **API de Delivery** - Integração com apps de entrega
+### Backend
 
-## 🏗️ Arquitetura
+- **Java 17**
+- **Spring Boot 3.5.6**
+- **Spring Security** (JWT)
+- **Spring Data JPA**
+- **H2 Database** (development)
+- **PostgreSQL** (production)
+- **Maven**
+
+### Frontend
+
+- **HTML5**
+- **CSS3** (Flexbox, Grid, Gradients)
+- **JavaScript ES6+** (Vanilla)
+- **Fetch API**
+- **LocalStorage**
+
+## 📁 Project Structure
 
 ```
-src/
-├── main/
-│   ├── java/com/rlevi/restaurante_backend/
-│   │   ├── config/          # Configurações de segurança e mensagens
-│   │   ├── controllers/     # Controladores REST da API
-│   │   ├── dto/            # Data Transfer Objects
-│   │   ├── model/          # Entidades JPA do banco de dados
-│   │   ├── repository/     # Repositórios de dados
-│   │   ├── security/       # Configurações JWT e Spring Security
-│   │   └── service/        # Lógica de negócio da aplicação
-│   └── resources/
-│       └── application.properties
+restaurant-backend/
+├── frontend/
+│   ├── index.html             # Main page
+│   └── login.html             # Authentication
+├── src/
+│   ├── main/
+│   │   ├── java/com/rlevi/restaurant_backend/
+│   │   │   ├── config/          # Security, CORS configurations
+│   │   │   ├── controllers/     # REST endpoints
+│   │   │   ├── dto/            # Data Transfer Objects
+│   │   │   ├── exception/      # Error handling
+│   │   │   ├── model/          # JPA entities
+│   │   │   ├── repository/     # Repositories
+│   │   │   ├── security/       # JWT, Authentication
+│   │   │   └── service/        # Business logic
+│   │   └── resources/          # application.properties
+│   └── test/                   # Unit tests
+├── pom.xml                    # Maven dependencies
+└── README.md                  # This file
 ```
 
-## 🚀 Tecnologias Utilizadas
+## 🛠️ Installation and Configuration
 
-![Static Badge](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Static Badge](https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot)
-![Static Badge](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Static Badge](https://img.shields.io/badge/H2-003545?style=for-the-badge&logo=h2&logoColor=white)
-![Static Badge](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+### Prerequisites
 
-- **Java 17** - Linguagem de programação principal
-- **Spring Boot 3.5.6** - Framework para desenvolvimento
-- **Spring Security** - Autenticação e autorização
-- **Spring Data JPA** - Persistência de dados
-- **JWT** - Tokens de autenticação segura
-- **H2 Database** - Banco para desenvolvimento
-- **PostgreSQL** - Banco para produção
-- **Lombok** - Redução de código boilerplate
-- **Maven** - Gerenciamento de dependências
-- **Bean Validation** - Validação de dados
+- **Java 17** or higher
+- **Maven 3.6+**
+- **Git**
+- Modern web browser
 
-## 📋 Funcionalidades
-
-### 🔐 Sistema de Autenticação
-
-- Registro de novos usuários com validação
-- Login seguro com JWT
-- Proteção de rotas com Spring Security
-- Criptografia de senhas com BCrypt
-
-### 🍕 Gerenciamento de Cardápio
-
-- Criar novos alimentos no cardápio
-- Listar todos os alimentos disponíveis
-- Buscar alimento específico por ID
-- Atualizar informações de alimentos
-- Remover alimentos do cardápio
-
-### 📦 Sistema de Pedidos
-
-- **Pedidos Múltiplos**: Criar pedidos com múltiplos itens alimentares
-- **Cálculo Automático**: Total calculado automaticamente com precisão BigDecimal
-- **Gestão Completa**: Listar, atualizar e gerenciar pedidos (admin)
-- **Controle de Status**: Avanço manual ou automático de status
-- **Transações Seguras**: Processamento transacional completo
-- **Status Flow**: RECEBIDO → NA_FILA → EM_PREPARO → PRONTO → A_CAMINHO → ENTREGUE
-- **Histórico Detalhado**: Rastreamento completo de itens e quantidades
-
-### 👤 Perfil do Usuário
-
-- **Histórico Detalhado**: Visualizar pedidos com todos os itens e quantidades
-- **Informações Completas**: Dados do cliente, preços unitários e subtotais
-- **Rastreamento**: Acompanhar status de cada pedido em tempo real
-- **Dados Pessoais**: Gerenciar informações do perfil
-
-## 🔧 Como Executar Localmente
-
-### Pré-requisitos
-
-- [Java 17+](https://adoptium.net/)
-- [Maven 3.6+](https://maven.apache.org/)
-- [Git](https://git-scm.com/)
-
-### Passos para Executar
-
-1. **Clone o repositório**
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/rlevidev/restaurante-backend.git
 cd restaurante-backend
 ```
 
-2. **Instale as dependências**
+### 2. Backend - Configuration
+
+#### Development (H2)
 
 ```bash
-./mvnw clean install
+# Compile and run
+./mvnw clean compile spring-boot:run
 ```
 
-3. **Execute a aplicação**
+Backend will be available at: `http://localhost:8080`
+
+#### Production (PostgreSQL)
+
+1. Configure PostgreSQL in `application-postgres.properties`
+2. Run with production profile:
 
 ```bash
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
 ```
 
-4. **Acesse a aplicação**
+### 3. Frontend - Access
 
-- **API Base**: `http://localhost:8080`
-- **Console H2**: `http://localhost:8080/h2-console`
-  - **JDBC URL**: `jdbc:h2:file:./restaurante-desenvolvimento`
-  - **Username**: `sa`
-  - **Password**: _(deixe em branco)_
-
-## 📡 Endpoints da API
-
-### Autenticação
-
-| Método | Endpoint         | Descrição             | Role Requerida |
-| ------ | ---------------- | --------------------- | -------------- |
-| POST   | `/auth/register` | Registar novo usuário | Nenhuma        |
-| POST   | `/auth/login`    | Fazer login           | Nenhuma        |
-
-### Alimentos (Cardápio)
-
-| Método | Endpoint                    | Descrição                 | Role Requerida |
-| ------ | --------------------------- | ------------------------- | -------------- |
-| GET    | `/alimentos/listar`         | Listar todos os alimentos | USER ou ADMIN  |
-| GET    | `/alimentos/buscar/{id}`    | Buscar alimento por ID    | USER ou ADMIN  |
-| POST   | `/alimentos/criar`          | Criar um novo alimento    | ADMIN          |
-| PUT    | `/alimentos/atualizar/{id}` | Atualizar alimento        | ADMIN          |
-| DELETE | `/alimentos/deletar/{id}`   | Remover alimento          | ADMIN          |
-
-### Pedidos
-
-| Método | Endpoint                             | Descrição                    | Role Requerida |
-| ------ | ------------------------------------ | ---------------------------- | -------------- |
-| GET    | `/pedidos/listar`                    | Listar todos os pedidos      | ADMIN          |
-| POST   | `/pedidos/criar`                     | Criar novo pedido            | USER ou ADMIN  |
-| DELETE | `/pedidos/deletar/{id}`              | Remover pedido               | ADMIN          |
-| PATCH  | `/pedidos/{pedidoId}/status`         | Atualizar status manualmente | ADMIN          |
-| PATCH  | `/pedidos/{pedidoId}/status/avancar` | Avanço automático de status  | ADMIN          |
-
-### Perfil do Usuário
-
-| Método | Endpoint          | Descrição                       | Role Requerida |
-| ------ | ----------------- | ------------------------------- | -------------- |
-| GET    | `/perfil/pedidos` | Histórico de pedidos do usuário | USER ou ADMIN  |
-
-## 🔒 Autenticação JWT
-
-A API utiliza autenticação baseada em JWT. Após fazer login, inclua o token no header das requisições:
-
-```http
-Authorization: Bearer {seu-jwt-token}
-```
-
-## 🗄️ Configuração do Banco de Dados
-
-### Desenvolvimento (H2)
-
-```properties
-spring.datasource.url=jdbc:h2:file:./restaurante-desenvolvimento
-spring.datasource.username=sa
-spring.datasource.password=
-```
-
-### Produção (PostgreSQL)
-
-```properties
-spring.profiles.active=postgres
-spring.datasource.url=jdbc:postgresql://localhost:5432/restaurante
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
-```
-
-## 📝 Exemplos de Uso
-
-### 1. Registrar Usuário
+Open `frontend/index.html` in browser or use a local server:
 
 ```bash
-POST /auth/register
-Content-Type: application/json
+# Python
+python -m http.server 3000
 
-{
-  "nome": "João Silva",
-  "email": "joao@email.com",
-  "senha": "123456"
-}
+# Node.js
+npx serve frontend
+
+# Or simply open index.html in browser
 ```
 
-### 2. Fazer Login
+## 📱 Features
+
+### 👤 For Customers
+
+- **🍽️ Interactive Menu**: View foods with prices
+- **🛒 Shopping Cart**: Add/remove items
+- **📝 Place Orders**: Complete delivery form
+- **📋 Track Orders**: History and real-time status
+- **👤 Profile**: Personal information
+
+### 👨‍💼 For Administrators
+
+- **📊 Manage Orders**: View and update status
+- **🍕 Manage Menu**: CRUD operations for foods
+- **👥 Manage Users**: Access control
+
+## 🎯 API Endpoints
+
+### Authentication
+
+| Method | Endpoint         | Description       | Required Role |
+| ------ | ---------------- | ----------------- | ------------- |
+| POST   | `/auth/register` | Register new user | None          |
+| POST   | `/auth/login`    | Login             | None          |
+
+### Foods (Menu)
+
+| Method | Endpoint                    | Description     | Required Role |
+| ------ | --------------------------- | --------------- | ------------- |
+| GET    | `/alimentos/listar`         | List all foods  | USER or ADMIN |
+| GET    | `/alimentos/buscar/{id}`    | Find food by ID | USER or ADMIN |
+| POST   | `/alimentos/criar`          | Create new food | ADMIN         |
+| PUT    | `/alimentos/atualizar/{id}` | Update food     | ADMIN         |
+| DELETE | `/alimentos/deletar/{id}`   | Remove food     | ADMIN         |
+
+### Orders
+
+| Method | Endpoint                             | Description                  | Required Role |
+| ------ | ------------------------------------ | ---------------------------- | ------------- |
+| GET    | `/pedidos/listar`                    | List all orders              | ADMIN         |
+| POST   | `/pedidos/criar`                     | Create new order             | USER or ADMIN |
+| DELETE | `/pedidos/deletar/{id}`              | Remove order                 | ADMIN         |
+| PATCH  | `/pedidos/{pedidoId}/status`         | Update status manually       | ADMIN         |
+| PATCH  | `/pedidos/{pedidoId}/status/avancar` | Automatic status advancement | ADMIN         |
+
+### User Profile
+
+| Method | Endpoint          | Description        | Required Role |
+| ------ | ----------------- | ------------------ | ------------- |
+| GET    | `/perfil/pedidos` | User order history | USER or ADMIN |
+
+## 🎨 Frontend - Technical Details
+
+### Structure
+
+- **Single Page Application** (SPA) vanilla
+- **Modular components** via JavaScript functions
+- **Global state** managed via variables
+- **Responsive** for desktop, tablet and mobile
+
+### Design System
+
+- **Colors**: Blue-purple gradient (#667eea → #764ba2)
+- **Typography**: Segoe UI with fallbacks
+- **Shadows**: Box-shadow for depth
+- **Animations**: Smooth transitions (0.3s)
+
+### Navigation
+
+- **Home**: Welcome page
+- **Menu**: Food selection
+- **Profile**: Order history
+- **Logout**: Red colored logout
+
+## 📊 Order Status
+
+- **RECEIVED**: Order awaiting processing
+- **IN_PREPARATION**: Being prepared in kitchen
+- **READY**: Ready for delivery
+- **ON_THE_WAY**: On the way to customer
+- **DELIVERED**: Successfully delivered
+
+## 🔧 Development
+
+### Run Tests
 
 ```bash
-POST /auth/login
-Content-Type: application/json
-
-{
-  "nome": "João Silva",
-  "senha": "123456"
-}
+./mvnw test
 ```
 
-### 3. Criar Alimento
+### Production Build
 
 ```bash
-POST /alimentos/criar
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "nomeAlimento": "Pizza Margherita",
-  "precoAlimento": 29.90,
-  "descricaoAlimento": "Pizza tradicional com molho de tomate, mussarela e manjericão"
-}
+./mvnw clean package
+java -jar target/restaurante-backend-0.0.1-SNAPSHOT.jar
 ```
 
-### 4. Criar Pedido (Múltiplos Itens)
+### Debug Logs
 
-```bash
-POST /pedidos/criar
-Authorization: Bearer {token}
-Content-Type: application/json
+Frontend includes detailed console logs for debugging.
 
-{
-  "itens": [
-    {
-      "alimentoId": 1,
-      "quantidade": 2
-    },
-    {
-      "alimentoId": 3,
-      "quantidade": 1
-    }
-  ],
-  "nomeCliente": "Levi",
-  "enderecoCliente": "Rua das Flores, 123",
-  "telefoneCliente": "(11) 99999-9999"
-}
-```
+## 🤝 Contributing
 
-## 🤝 Como Contribuir
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Contribuições são sempre bem-vindas! Veja nosso [guia completo de contribuição](./CONTRIBUTING.md) para saber como participar.
+## 📝 License
 
-Aqui estão algumas maneiras de contribuir:
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-### Tipos de Contribuições
+## 📞 Support
 
-- 🐛 **Correção de Bugs**: Identificar e corrigir problemas
-- ✨ **Novas Funcionalidades**: Implementar novos recursos
-- 📚 **Documentação**: Melhorar documentação e guias
-- 🧪 **Testes**: Adicionar ou melhorar testes
-- 🎨 **UI/UX**: Melhorar interfaces e experiência do usuário
-
-### Processo de Contribuição
-
-1. **Fork** o projeto
-2. **Clone** seu fork: `git clone https://github.com/seu-usuario/restaurante-backend.git`
-3. **Crie uma branch** para sua feature: `git checkout -b feature/nova-funcionalidade`
-4. **Faça suas alterações** e commit: `git commit -m 'Adiciona nova funcionalidade'`
-5. **Push** para sua branch: `git push origin feature/nova-funcionalidade`
-6. **Abra um Pull Request** no repositório original
-
-### Diretrizes
-
-- Siga os padrões de código existentes
-- Adicione testes para novas funcionalidades
-- Atualize a documentação quando necessário
-- Mantenha commits pequenos e descritivos
-
-## 📄 Licença
-
-Este projeto está sob a licença GPL-3.0. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 👨‍💻 Autor
-
-- GitHub: [@rlevidev](https://github.com/rlevidev)
-
-## Contribuidores ✨
-
-<a href="https://github.com/rlevidev/restaurante-backend/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=rlevidev/restaurante-backend&anon=0&columns=20&max=100" />
-</a>
-
-Toda contribuição é muito bem-vinda! Cada colaborador ajuda a tornar o projeto melhor.
+For support, open an issue on GitHub or contact the development team.
 
 ---
 
-⭐ **Se este projeto te ajudou, considere dar uma estrela!**
-
-## 📞 Suporte
-
-Se você tiver dúvidas ou sugestões:
-
-- Abra uma [issue](https://github.com/rlevidev/restaurante-backend/issues) no GitHub
+**Developed with ❤️ for restaurants that want to innovate in online service.**
