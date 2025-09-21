@@ -43,8 +43,7 @@ public class PedidosController {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário", "nome", userDetails.getUsername()));
 
         PedidosResponseDTO pedido = pedidosService.criarPedido(
-                pedidosRequestDTO.getIdAlimento(),
-                pedidosRequestDTO.getQuantidade(),
+                pedidosRequestDTO.getItens(),
                 pedidosRequestDTO.getNomeCliente(),
                 pedidosRequestDTO.getEnderecoCliente(),
                 pedidosRequestDTO.getTelefoneCliente(),
