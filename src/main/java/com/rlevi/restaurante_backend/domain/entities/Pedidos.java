@@ -1,8 +1,10 @@
-package com.rlevi.restaurante_backend.model;
+package com.rlevi.restaurante_backend.domain.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.rlevi.restaurante_backend.domain.enums.StatusPedido;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

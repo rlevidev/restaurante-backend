@@ -14,163 +14,162 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.rlevi.restaurante_backend.dto.ErrorResponseDTO;
-import com.rlevi.restaurante_backend.dto.ValidationErrorResponseDTO;
-import com.rlevi.restaurante_backend.exception.AuthenticationException;
-import com.rlevi.restaurante_backend.exception.BusinessException;
-import com.rlevi.restaurante_backend.exception.DuplicateResourceException;
-import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
+import com.rlevi.restaurante_backend.shared.dto.response.ErrorResponseDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.ValidationErrorResponseDTO;
+import com.rlevi.restaurante_backend.shared.exception.AuthenticationException;
+import com.rlevi.restaurante_backend.shared.exception.BusinessException;
+import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
+import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(
-            ResourceNotFoundException ex, HttpServletRequest request) {
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(
+                        ResourceNotFoundException ex, HttpServletRequest request) {
 
-        logger.warn("Recurso não encontrado: {}", ex.getMessage());
+                logger.warn("Recurso não encontrado: {}", ex.getMessage());
 
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Recurso Não Encontrado")
-                .message(ex.getMessage())
-                .status(HttpStatus.NOT_FOUND.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Recurso Não Encontrado",
+                                ex.getMessage(),
+                                HttpStatus.NOT_FOUND.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
 
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDuplicateResource(
-            DuplicateResourceException ex, HttpServletRequest request) {
-
-        logger.warn("Recurso duplicado: {}", ex.getMessage());
-
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Recurso Duplicado")
-                .message(ex.getMessage())
-                .status(HttpStatus.CONFLICT.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponseDTO> handleBusinessException(
-            BusinessException ex, HttpServletRequest request) {
-
-        logger.warn("Erro de negócio: {}", ex.getMessage());
-
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Erro de Regra de Negócio")
-                .message(ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(
-            AuthenticationException ex, HttpServletRequest request) {
-
-        logger.warn("Erro de autenticação: {}", ex.getMessage());
-
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Erro de Autenticação")
-                .message(ex.getMessage())
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponseDTO> handleAccessDenied(
-            AccessDeniedException ex, HttpServletRequest request) {
-
-        logger.warn("Acesso negado: {}", ex.getMessage());
-
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Acesso Negado")
-                .message("Você não tem permissão para acessar este recurso")
-                .status(HttpStatus.FORBIDDEN.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponseDTO> handleValidationErrors(
-            MethodArgumentNotValidException ex, HttpServletRequest request) {
-
-        logger.warn("Erro de validação: {}", ex.getMessage());
-
-        Map<String, String> fieldErrors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
-
-        ValidationErrorResponseDTO error = ValidationErrorResponseDTO.builder()
-                .error("Erro de Validação")
-                .message("Dados inválidos fornecidos")
-                .status(HttpStatus.BAD_REQUEST.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .fieldErrors(fieldErrors)
-                .build();
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolation(
-            DataIntegrityViolationException ex, HttpServletRequest request) {
-
-        logger.error("Violação de integridade de dados: {}", ex.getMessage());
-
-        String message = "Erro de integridade de dados. Verifique se os dados não violam as regras do banco.";
-        if (ex.getMessage().contains("unique")) {
-            message = "Já existe um registro com esses dados únicos.";
+                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
 
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Erro de Integridade")
-                .message(message)
-                .status(HttpStatus.CONFLICT.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
+        @ExceptionHandler(DuplicateResourceException.class)
+        public ResponseEntity<ErrorResponseDTO> handleDuplicateResource(
+                        DuplicateResourceException ex, HttpServletRequest request) {
 
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
-    }
+                logger.warn("Recurso duplicado: {}", ex.getMessage());
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGenericException(
-            Exception ex, HttpServletRequest request) {
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Recurso Duplicado",
+                                ex.getMessage(),
+                                HttpStatus.CONFLICT.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
 
-        logger.error("Erro interno do servidor: {}", ex.getMessage(), ex);
+                return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        }
 
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .error("Erro Interno do Servidor")
-                .message("Ocorreu um erro inesperado. Tente novamente mais tarde.")
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .path(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
+        @ExceptionHandler(BusinessException.class)
+        public ResponseEntity<ErrorResponseDTO> handleBusinessException(
+                        BusinessException ex, HttpServletRequest request) {
 
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+                logger.warn("Erro de negócio: {}", ex.getMessage());
+
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Erro de Regra de Negócio",
+                                ex.getMessage(),
+                                HttpStatus.BAD_REQUEST.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
+
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(AuthenticationException.class)
+        public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(
+                        AuthenticationException ex, HttpServletRequest request) {
+
+                logger.warn("Erro de autenticação: {}", ex.getMessage());
+
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Erro de Autenticação",
+                                ex.getMessage(),
+                                HttpStatus.UNAUTHORIZED.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
+
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        }
+
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ErrorResponseDTO> handleAccessDenied(
+                        AccessDeniedException ex, HttpServletRequest request) {
+
+                logger.warn("Acesso negado: {}", ex.getMessage());
+
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Acesso Negado",
+                                "Você não tem permissão para acessar este recurso",
+                                HttpStatus.FORBIDDEN.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
+
+                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ValidationErrorResponseDTO> handleValidationErrors(
+                        MethodArgumentNotValidException ex, HttpServletRequest request) {
+
+                logger.warn("Erro de validação: {}", ex.getMessage());
+
+                Map<String, String> fieldErrors = new HashMap<>();
+                ex.getBindingResult().getFieldErrors()
+                                .forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
+
+                ValidationErrorResponseDTO error = new ValidationErrorResponseDTO(
+                                "Erro de Validação",
+                                "Dados inválidos fornecidos",
+                                HttpStatus.BAD_REQUEST.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                fieldErrors);
+
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(DataIntegrityViolationException.class)
+        public ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolation(
+                        DataIntegrityViolationException ex, HttpServletRequest request) {
+
+                logger.error("Violação de integridade de dados: {}", ex.getMessage());
+
+                String message = "Erro de integridade de dados. Verifique se os dados não violam as regras do banco.";
+                if (ex.getMessage().contains("unique")) {
+                        message = "Já existe um registro com esses dados únicos.";
+                }
+
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Erro de Integridade",
+                                message,
+                                HttpStatus.CONFLICT.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
+
+                return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        }
+
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorResponseDTO> handleGenericException(
+                        Exception ex, HttpServletRequest request) {
+
+                logger.error("Erro interno do servidor: {}", ex.getMessage(), ex);
+
+                ErrorResponseDTO error = new ErrorResponseDTO(
+                                "Erro Interno do Servidor",
+                                "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+                                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                request.getRequestURI(),
+                                LocalDateTime.now(),
+                                null);
+
+                return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 }

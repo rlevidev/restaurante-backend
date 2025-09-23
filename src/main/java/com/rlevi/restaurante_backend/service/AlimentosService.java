@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
-import com.rlevi.restaurante_backend.model.Alimentos;
+import com.rlevi.restaurante_backend.domain.entities.Alimentos;
 import com.rlevi.restaurante_backend.repository.AlimentosRepository;
+import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
 
 @Service
 public class AlimentosService {

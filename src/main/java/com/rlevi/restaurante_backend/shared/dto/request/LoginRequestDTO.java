@@ -1,4 +1,4 @@
-package com.rlevi.restaurante_backend.dto;
+package com.rlevi.restaurante_backend.shared.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

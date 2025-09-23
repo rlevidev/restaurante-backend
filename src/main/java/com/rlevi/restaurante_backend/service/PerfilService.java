@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.rlevi.restaurante_backend.dto.ItemPedidoResponseDTO;
-import com.rlevi.restaurante_backend.dto.PerfilResponseDTO;
-import com.rlevi.restaurante_backend.model.ItemPedido;
-import com.rlevi.restaurante_backend.model.Pedidos;
-import com.rlevi.restaurante_backend.model.Usuarios;
+import com.rlevi.restaurante_backend.domain.entities.ItemPedido;
+import com.rlevi.restaurante_backend.domain.entities.Pedidos;
+import com.rlevi.restaurante_backend.domain.entities.Usuarios;
 import com.rlevi.restaurante_backend.repository.PedidosRepository;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
+import com.rlevi.restaurante_backend.shared.dto.response.ItemPedidoResponseDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.PerfilResponseDTO;
 
 @Service
 public class PerfilService {
@@ -38,26 +38,24 @@ public class PerfilService {
                 .map(this::converterItemParaDTO)
                 .collect(Collectors.toList());
 
-        return PerfilResponseDTO.builder()
-                .pedidoId(pedido.getPedidoId())
-                .itens(itensDTO)
-                .precoTotal(pedido.getPrecoTotal())
-                .nomeCliente(pedido.getNomeCliente())
-                .enderecoCliente(pedido.getEnderecoCliente())
-                .telefoneCliente(pedido.getTelefoneCliente())
-                .dataCriacao(pedido.getDataCriacao())
-                .status(pedido.getStatus())
-                .build();
+        return new PerfilResponseDTO(
+                pedido.getPedidoId(),
+                itensDTO,
+                pedido.getPrecoTotal(),
+                pedido.getNomeCliente(),
+                pedido.getEnderecoCliente(),
+                pedido.getTelefoneCliente(),
+                pedido.getDataCriacao(),
+                pedido.getStatus());
     }
 
     private ItemPedidoResponseDTO converterItemParaDTO(ItemPedido item) {
-        return ItemPedidoResponseDTO.builder()
-                .idItem(item.getIdItem())
-                .idAlimento(item.getAlimento().getIdAlimento())
-                .nomeAlimento(item.getAlimento().getNomeAlimento())
-                .precoUnitario(item.getPrecoUnitario())
-                .quantidade(item.getQuantidade())
-                .subtotal(item.getSubtotal())
-                .build();
+        return new ItemPedidoResponseDTO(
+                item.getIdItem(),
+                item.getAlimento().getIdAlimento(),
+                item.getAlimento().getNomeAlimento(),
+                item.getPrecoUnitario(),
+                item.getQuantidade(),
+                item.getSubtotal());
     }
 }

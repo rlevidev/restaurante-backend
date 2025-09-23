@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rlevi.restaurante_backend.dto.LoginRequestDTO;
-import com.rlevi.restaurante_backend.dto.LoginResponseDTO;
-import com.rlevi.restaurante_backend.dto.RegisterRequestDTO;
-import com.rlevi.restaurante_backend.exception.AuthenticationException;
-import com.rlevi.restaurante_backend.exception.DuplicateResourceException;
-import com.rlevi.restaurante_backend.model.Usuarios;
+import com.rlevi.restaurante_backend.domain.entities.Usuarios;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
 import com.rlevi.restaurante_backend.security.JwtUtil;
+import com.rlevi.restaurante_backend.shared.dto.request.LoginRequestDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.LoginResponseDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.RegisterRequestDTO;
+import com.rlevi.restaurante_backend.shared.exception.AuthenticationException;
+import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
 
 import jakarta.validation.Valid;
 

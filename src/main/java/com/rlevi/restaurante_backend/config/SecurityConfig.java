@@ -9,12 +9,13 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+
 import com.rlevi.restaurante_backend.config.messages.CustomAccessDeniedHandler;
 import com.rlevi.restaurante_backend.config.messages.CustomAuthenticationEntryPoint;
 import com.rlevi.restaurante_backend.security.JwtFilter;
@@ -28,7 +29,7 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    
+
     @Autowired
     private JwtFilter jwtFilter;
 
@@ -38,17 +39,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .disable())
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/auth/register", "/auth/login", "/h2-console/**").permitAll()
-                                .requestMatchers("/alimentos/listar", "/alimentos/buscar/{id}").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers("/pedidos/criar").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers("/alimentos/**", "/pedidos/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
-                )
-                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint))
+                        .requestMatchers("/auth/register", "/auth/login", "/h2-console/**").permitAll()
+                        .requestMatchers("/alimentos/listar", "/alimentos/buscar/{id}").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/pedidos/criar").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/alimentos/**", "/pedidos/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler)
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -59,7 +64,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

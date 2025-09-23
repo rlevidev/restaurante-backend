@@ -1,4 +1,4 @@
-package com.rlevi.restaurante_backend.dto;
+package com.rlevi.restaurante_backend.shared.dto.response;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

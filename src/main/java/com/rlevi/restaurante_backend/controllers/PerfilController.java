@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import com.rlevi.restaurante_backend.dto.PerfilResponseDTO;
 import com.rlevi.restaurante_backend.service.PerfilService;
+import com.rlevi.restaurante_backend.shared.dto.response.PerfilResponseDTO;
 
 @RestController
 @RequestMapping("/perfil")

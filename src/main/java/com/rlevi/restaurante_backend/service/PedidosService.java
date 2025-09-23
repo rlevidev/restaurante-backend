@@ -9,17 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rlevi.restaurante_backend.dto.ItemPedidoRequestDTO;
-import com.rlevi.restaurante_backend.dto.ItemPedidoResponseDTO;
-import com.rlevi.restaurante_backend.dto.PedidosResponseDTO;
-import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
-import com.rlevi.restaurante_backend.model.Alimentos;
-import com.rlevi.restaurante_backend.model.ItemPedido;
-import com.rlevi.restaurante_backend.model.Pedidos;
-import com.rlevi.restaurante_backend.model.StatusPedido;
-import com.rlevi.restaurante_backend.model.Usuarios;
+import com.rlevi.restaurante_backend.domain.entities.Alimentos;
+import com.rlevi.restaurante_backend.domain.entities.ItemPedido;
+import com.rlevi.restaurante_backend.domain.entities.Pedidos;
+import com.rlevi.restaurante_backend.domain.entities.Usuarios;
+import com.rlevi.restaurante_backend.domain.enums.StatusPedido;
 import com.rlevi.restaurante_backend.repository.AlimentosRepository;
 import com.rlevi.restaurante_backend.repository.PedidosRepository;
+import com.rlevi.restaurante_backend.shared.dto.request.ItemPedidoRequestDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.ItemPedidoResponseDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.PedidosResponseDTO;
+import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
 
 @Service
 public class PedidosService {
@@ -45,17 +45,17 @@ public class PedidosService {
         BigDecimal precoTotal = BigDecimal.ZERO;
 
         for (ItemPedidoRequestDTO itemRequest : itensRequest) {
-            Alimentos alimento = alimentosRepository.findById(itemRequest.getIdAlimento())
-                    .orElseThrow(() -> new ResourceNotFoundException("Alimento", itemRequest.getIdAlimento()));
+            Alimentos alimento = alimentosRepository.findById(itemRequest.idAlimento())
+                    .orElseThrow(() -> new ResourceNotFoundException("Alimento", itemRequest.idAlimento()));
 
             BigDecimal subtotal = alimento.getPrecoAlimento()
-                    .multiply(BigDecimal.valueOf(itemRequest.getQuantidade()));
+                    .multiply(BigDecimal.valueOf(itemRequest.quantidade()));
             precoTotal = precoTotal.add(subtotal);
 
             ItemPedido item = ItemPedido.builder()
                     .pedido(pedido)
                     .alimento(alimento)
-                    .quantidade(itemRequest.getQuantidade())
+                    .quantidade(itemRequest.quantidade())
                     .precoUnitario(alimento.getPrecoAlimento())
                     .subtotal(subtotal)
                     .build();
@@ -75,27 +75,25 @@ public class PedidosService {
                 .map(this::converterItemParaDTO)
                 .toList();
 
-        return PedidosResponseDTO.builder()
-                .pedidoId(pedido.getPedidoId())
-                .itens(itensDTO)
-                .precoTotal(pedido.getPrecoTotal())
-                .nomeCliente(pedido.getNomeCliente())
-                .enderecoCliente(pedido.getEnderecoCliente())
-                .telefoneCliente(pedido.getTelefoneCliente())
-                .dataCriacao(pedido.getDataCriacao())
-                .status(pedido.getStatus())
-                .build();
+        return new PedidosResponseDTO(
+                pedido.getPedidoId(),
+                itensDTO,
+                pedido.getPrecoTotal(),
+                pedido.getNomeCliente(),
+                pedido.getEnderecoCliente(),
+                pedido.getTelefoneCliente(),
+                pedido.getDataCriacao(),
+                pedido.getStatus());
     }
 
     private ItemPedidoResponseDTO converterItemParaDTO(ItemPedido item) {
-        return ItemPedidoResponseDTO.builder()
-                .idItem(item.getIdItem())
-                .idAlimento(item.getAlimento().getIdAlimento())
-                .nomeAlimento(item.getAlimento().getNomeAlimento())
-                .precoUnitario(item.getPrecoUnitario())
-                .quantidade(item.getQuantidade())
-                .subtotal(item.getSubtotal())
-                .build();
+        return new ItemPedidoResponseDTO(
+                item.getIdItem(),
+                item.getAlimento().getIdAlimento(),
+                item.getAlimento().getNomeAlimento(),
+                item.getPrecoUnitario(),
+                item.getQuantidade(),
+                item.getSubtotal());
     }
 
     public List<PedidosResponseDTO> listarPedidos() {

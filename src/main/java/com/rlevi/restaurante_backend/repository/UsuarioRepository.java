@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.rlevi.restaurante_backend.model.Usuarios;
+import com.rlevi.restaurante_backend.domain.entities.Usuarios;
 
 public interface UsuarioRepository extends JpaRepository<Usuarios, Long> {
     Optional<Usuarios> findByNome(String nome);

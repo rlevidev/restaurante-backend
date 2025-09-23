@@ -1,6 +1,6 @@
 package com.rlevi.restaurante_backend.security;
 
-import com.rlevi.restaurante_backend.model.Usuarios;
+import com.rlevi.restaurante_backend.domain.entities.Usuarios;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com nome: " + username));
 
         String roleSemPrefix = usuario.getRole().replace("ROLE_", "");
-        
+
         return User.builder()
                 .username(usuario.getNome())
                 .password(usuario.getSenha())

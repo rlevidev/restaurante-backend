@@ -1,4 +1,4 @@
-package com.rlevi.restaurante_backend.exception;
+package com.rlevi.restaurante_backend.shared.exception;
 
 public class DuplicateResourceException extends RuntimeException {
     public DuplicateResourceException(String message) {

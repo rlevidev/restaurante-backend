@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
-import com.rlevi.restaurante_backend.model.Alimentos;
+import com.rlevi.restaurante_backend.domain.entities.Alimentos;
 import com.rlevi.restaurante_backend.service.AlimentosService;
+import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
 
 import jakarta.validation.Valid;
 

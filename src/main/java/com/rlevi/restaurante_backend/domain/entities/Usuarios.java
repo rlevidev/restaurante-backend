@@ -1,4 +1,4 @@
-package com.rlevi.restaurante_backend.model;
+package com.rlevi.restaurante_backend.domain.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +24,7 @@ public class Usuarios {
 
     @Column(unique = true, nullable = false)
     private String email;
-    
+
     private String nome;
     private String senha;
 

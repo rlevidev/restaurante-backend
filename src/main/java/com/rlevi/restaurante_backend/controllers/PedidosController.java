@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rlevi.restaurante_backend.dto.PedidosRequestDTO;
-import com.rlevi.restaurante_backend.dto.PedidosResponseDTO;
-import com.rlevi.restaurante_backend.exception.ResourceNotFoundException;
-import com.rlevi.restaurante_backend.model.StatusPedido;
-import com.rlevi.restaurante_backend.model.Usuarios;
+import com.rlevi.restaurante_backend.domain.entities.Usuarios;
+import com.rlevi.restaurante_backend.domain.enums.StatusPedido;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
 import com.rlevi.restaurante_backend.service.PedidosService;
+import com.rlevi.restaurante_backend.shared.dto.request.PedidosRequestDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.PedidosResponseDTO;
+import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
 
 import jakarta.validation.Valid;
 
@@ -43,10 +43,10 @@ public class PedidosController {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário", "nome", userDetails.getUsername()));
 
         PedidosResponseDTO pedido = pedidosService.criarPedido(
-                pedidosRequestDTO.getItens(),
-                pedidosRequestDTO.getNomeCliente(),
-                pedidosRequestDTO.getEnderecoCliente(),
-                pedidosRequestDTO.getTelefoneCliente(),
+                pedidosRequestDTO.itens(),
+                pedidosRequestDTO.nomeCliente(),
+                pedidosRequestDTO.enderecoCliente(),
+                pedidosRequestDTO.telefoneCliente(),
                 usuario);
         return new ResponseEntity<>(pedido, HttpStatus.CREATED);
     }
