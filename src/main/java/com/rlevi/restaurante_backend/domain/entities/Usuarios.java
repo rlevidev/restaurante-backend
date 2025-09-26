@@ -1,10 +1,15 @@
 package com.rlevi.restaurante_backend.domain.entities;
 
+import com.rlevi.restaurante_backend.domain.enums.Roles;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,5 +33,12 @@ public class Usuarios {
     private String nome;
     private String senha;
 
-    private String role = "ROLE_USER";
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Roles role;
+
+    @PrePersist
+    protected void onCreate() {
+        role = Roles.USER;
+    }
 }
