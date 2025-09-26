@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rlevi.restaurante_backend.domain.entities.Usuarios;
+import com.rlevi.restaurante_backend.domain.enums.Roles;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
 import com.rlevi.restaurante_backend.security.JwtUtil;
 import com.rlevi.restaurante_backend.shared.dto.request.LoginRequestDTO;
@@ -41,10 +42,15 @@ public class AuthController {
             throw new DuplicateResourceException("Usuário", "nome", registerRequest.nome());
         }
 
-        Usuarios usuarios = usuarioRepository.save(new Usuarios(null, registerRequest.email(), registerRequest.nome(),
-                passwordEncoder.encode(registerRequest.senha()), "ROLE_USER"));
+        Usuarios usuarios = new Usuarios();
+        usuarios.setEmail(registerRequest.email());
+        usuarios.setNome(registerRequest.nome());
+        usuarios.setSenha(passwordEncoder.encode(registerRequest.senha()));
+        usuarios.setRole(Roles.USER);
 
-        String token = jwtUtil.generateToken(usuarios.getNome(), usuarios.getRole());
+        usuarios = usuarioRepository.save(usuarios);
+
+        String token = jwtUtil.generateToken(usuarios.getNome(), "ROLE_" + usuarios.getRole().name());
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
@@ -57,7 +63,7 @@ public class AuthController {
             throw new AuthenticationException("Senha inválida");
         }
 
-        String token = jwtUtil.generateToken(usuarios.getNome(), usuarios.getRole());
+        String token = jwtUtil.generateToken(usuarios.getNome(), "ROLE_" + usuarios.getRole().name());
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 }
