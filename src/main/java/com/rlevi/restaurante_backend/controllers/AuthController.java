@@ -46,11 +46,11 @@ public class AuthController {
         usuarios.setEmail(registerRequest.email());
         usuarios.setNome(registerRequest.nome());
         usuarios.setSenha(passwordEncoder.encode(registerRequest.senha()));
-        usuarios.setRole(Roles.USER);
+        usuarios.setRole(Roles.ROLE_USER);
 
         usuarios = usuarioRepository.save(usuarios);
 
-        String token = jwtUtil.generateToken(usuarios.getNome(), "ROLE_" + usuarios.getRole().name());
+        String token = jwtUtil.generateToken(usuarios.getNome(), usuarios.getRole().name());
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
@@ -63,7 +63,7 @@ public class AuthController {
             throw new AuthenticationException("Senha inválida");
         }
 
-        String token = jwtUtil.generateToken(usuarios.getNome(), "ROLE_" + usuarios.getRole().name());
+        String token = jwtUtil.generateToken(usuarios.getNome(), usuarios.getRole().name());
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 }

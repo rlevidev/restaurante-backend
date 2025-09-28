@@ -21,12 +21,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuarios usuario = usuarioRepository.findByNome(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com nome: " + username));
 
-        String roleSemPrefix = usuario.getRole().name();
-
         return User.builder()
                 .username(usuario.getNome())
                 .password(usuario.getSenha())
-                .roles(roleSemPrefix)
+                .authorities(usuario.getRole().name())
                 .build();
     }
 }

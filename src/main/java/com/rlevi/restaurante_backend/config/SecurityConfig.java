@@ -24,56 +24,55 @@ import com.rlevi.restaurante_backend.security.JwtFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
+        @Autowired
+        private CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    @Autowired
-    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+        @Autowired
+        private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    @Autowired
-    private JwtFilter jwtFilter;
+        @Autowired
+        private JwtFilter jwtFilter;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+        @Autowired
+        private UserDetailsService userDetailsService;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                        .disable())
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin()))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/register", "/auth/login", "/h2-console/**").permitAll()
-                        .requestMatchers("/alimentos/listar", "/alimentos/buscar/{id}").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/pedidos/criar").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/alimentos/**", "/pedidos/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler)
-                        .authenticationEntryPoint(customAuthenticationEntryPoint))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .headers(headers -> headers
+                                                .frameOptions(frameOptions -> frameOptions.sameOrigin()))
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(authorize -> authorize
+                                                .requestMatchers("/auth/register", "/auth/login").permitAll()
+                                                .requestMatchers("/alimentos/listar", "/alimentos/buscar/{id}")
+                                                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                                                .requestMatchers("/pedidos/criar").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                                                .requestMatchers("/alimentos/**", "/pedidos/**").hasAuthority("ROLE_ADMIN")
+                                                .anyRequest().authenticated())
+                                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler)
+                                                .authenticationEntryPoint(customAuthenticationEntryPoint))
+                                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                return http.build();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+        @Bean
+        public AuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+                authProvider.setUserDetailsService(userDetailsService);
+                authProvider.setPasswordEncoder(passwordEncoder());
+                return authProvider;
+        }
 }

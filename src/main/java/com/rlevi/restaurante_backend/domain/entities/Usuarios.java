@@ -39,6 +39,6 @@ public class Usuarios {
 
     @PrePersist
     protected void onCreate() {
-        role = Roles.USER;
+        role = Roles.ROLE_USER;
     }
 }
