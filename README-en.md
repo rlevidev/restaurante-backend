@@ -46,7 +46,7 @@ src/
 ![Static Badge](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot)
 ![Static Badge](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Static Badge](https://img.shields.io/badge/H2-003545?style=for-the-badge&logo=h2&logoColor=white)
+![Static Badge](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
 
 - **Java 17** - Main programming language
@@ -54,7 +54,7 @@ src/
 - **Spring Security** - Authentication and authorization
 - **Spring Data JPA** - Data persistence
 - **JWT** - Secure authentication tokens
-- **H2 Database** - Development database
+- **SQLite** - Development database
 - **PostgreSQL** - Production database
 - **Lombok** - Boilerplate code reduction
 - **Maven** - Dependency management
@@ -126,10 +126,50 @@ cd restaurante-backend
 4. **Access the application**
 
 - **API Base**: `http://localhost:8080`
-- **H2 Console**: `http://localhost:8080/h2-console`
-  - **JDBC URL**: `jdbc:h2:file:./restaurante-desenvolvimento`
-  - **Username**: `sa`
-  - **Password**: _(leave blank)_
+- **Default Profile**: Development (SQLite)
+
+## 🗄️ Running with Different Databases
+
+The project supports two execution profiles with different databases:
+
+### SQLite (Development Profile - `dev`)
+
+Ideal for local development, uses an embedded SQLite database.
+
+```bash
+# Run with SQLite
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+**Features:**
+- Database created automatically in `restaurante.db`
+- DDL auto-update enabled
+- SQL logging enabled for debugging
+- No external configuration required
+
+### PostgreSQL (Production Profile - `prod`)
+
+For production environments, uses PostgreSQL via Docker.
+
+```bash
+# 1. Start PostgreSQL via Docker
+docker-compose up -d
+
+# 2. Run with PostgreSQL
+./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
+**Features:**
+- Connects to PostgreSQL on port 5432
+- DDL auto-update enabled
+- SQL logging disabled
+- Tables created automatically
+
+**Docker PostgreSQL Credentials:**
+- **Host:** `localhost:5432`
+- **Database:** `restaurante_db`
+- **User:** `postgres`
+- **Password:** `senha123`
 
 ## 📡 API Endpoints
 
@@ -174,24 +214,6 @@ The API uses JWT-based authentication. After logging in, include the token in th
 Authorization: Bearer {your-jwt-token}
 ```
 
-## 🗄️ Database Configuration
-
-### Development (H2)
-
-```properties
-spring.datasource.url=jdbc:h2:file:./restaurante-desenvolvimento
-spring.datasource.username=sa
-spring.datasource.password=
-```
-
-### Production (PostgreSQL)
-
-```properties
-spring.profiles.active=postgres
-spring.datasource.url=jdbc:postgresql://localhost:5432/restaurante
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-```
 
 ## 📝 Usage Examples
 
