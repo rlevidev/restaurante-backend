@@ -13,8 +13,8 @@ import com.rlevi.restaurante_backend.domain.enums.Roles;
 import com.rlevi.restaurante_backend.repository.UsuarioRepository;
 import com.rlevi.restaurante_backend.security.JwtUtil;
 import com.rlevi.restaurante_backend.shared.dto.request.LoginRequestDTO;
+import com.rlevi.restaurante_backend.shared.dto.request.RegisterRequestDTO;
 import com.rlevi.restaurante_backend.shared.dto.response.LoginResponseDTO;
-import com.rlevi.restaurante_backend.shared.dto.response.RegisterRequestDTO;
 import com.rlevi.restaurante_backend.shared.exception.AuthenticationException;
 import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
 
