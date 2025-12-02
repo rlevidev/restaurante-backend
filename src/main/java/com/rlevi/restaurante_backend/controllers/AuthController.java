@@ -18,10 +18,15 @@ import com.rlevi.restaurante_backend.shared.dto.response.RegisterRequestDTO;
 import com.rlevi.restaurante_backend.shared.exception.AuthenticationException;
 import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação", description = "Endpoints para autenticação e registro de usuários")
 public class AuthController {
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -31,6 +36,15 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
+    @Operation(
+        summary = "Registrar novo usuário",
+        description = "Cria uma nova conta de usuário no sistema. O usuário será criado com perfil básico (ROLE_USER)."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso, retorna token JWT"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos ou usuário já existe"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     public ResponseEntity<LoginResponseDTO> register(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         // Verificar se o email já existe
         if (usuarioRepository.existsByEmail(registerRequest.email())) {
@@ -55,6 +69,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(
+        summary = "Fazer login",
+        description = "Autentica um usuário existente e retorna um token JWT para acesso aos recursos protegidos."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Login realizado com sucesso, retorna token JWT"),
+        @ApiResponse(responseCode = "401", description = "Credenciais inválidas"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
         Usuarios usuarios = usuarioRepository.findByNome(loginRequest.nome())
                 .orElseThrow(() -> new AuthenticationException("Usuário não encontrado"));

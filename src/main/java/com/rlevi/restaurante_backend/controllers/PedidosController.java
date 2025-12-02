@@ -24,10 +24,15 @@ import com.rlevi.restaurante_backend.shared.dto.request.PedidosRequestDTO;
 import com.rlevi.restaurante_backend.shared.dto.response.PedidosResponseDTO;
 import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/pedidos")
+@Tag(name = "Pedidos", description = "Endpoints para gerenciamento e criação de pedidos")
 public class PedidosController {
 
     @Autowired
@@ -37,6 +42,15 @@ public class PedidosController {
     private UsuarioRepository usuarioRepository;
 
     @PostMapping("/criar")
+    @Operation(
+        summary = "Criar novo pedido",
+        description = "Cria um novo pedido com base nos itens fornecidos."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     public ResponseEntity<PedidosResponseDTO> criarPedido(@Valid @RequestBody PedidosRequestDTO pedidosRequestDTO,
             @AuthenticationPrincipal UserDetails userDetails) {
         Usuarios usuario = usuarioRepository.findByNome(userDetails.getUsername())
@@ -52,18 +66,46 @@ public class PedidosController {
     }
 
     @GetMapping("/listar")
+    @Operation(
+        summary = "Listar todos os pedidos",
+        description = "Listar todos os pedidos cadastrados no sistema."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Pedidos listados com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     public ResponseEntity<List<PedidosResponseDTO>> listarPedidos() {
         List<PedidosResponseDTO> pedidos = pedidosService.listarPedidos();
         return ResponseEntity.ok(pedidos);
     }
 
     @DeleteMapping("/deletar/{id}")
+    @Operation(
+        summary = "Deletar um pedido pelo ID",
+        description = "Deletar um pedido pelo ID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Pedido deletado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    }
+    )
     public ResponseEntity<Void> deletarPedido(@PathVariable Long id) {
         pedidosService.deletarPedido(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{pedidoId}/status")
+    @Operation(
+        summary = "Atualiza o status de um pedido manualmente",
+        description = "Atualiza o status de um pedido pelo ID com base nos dados fornecidos."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Status atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    }
+    )
     public ResponseEntity<PedidosResponseDTO> atualizarStatus(@PathVariable Long pedidoId,
             @RequestBody StatusPedido novoStatus) {
         PedidosResponseDTO atualizado = pedidosService.atualizarStatusManual(pedidoId, novoStatus);
@@ -71,6 +113,16 @@ public class PedidosController {
     }
 
     @PatchMapping("/{pedidoId}/status/avancar")
+    @Operation(
+        summary = "Avançar o status de um pedido em ordem definida",
+        description = "Avançar o status de um pedido em uma ordem pre-definida pelo ID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Status avançado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    }
+    )
     public ResponseEntity<StatusPedido> avancarStatusAutomatico(@PathVariable Long pedidoId) {
         StatusPedido novoStatus = pedidosService.avancarStatusAutomatico(pedidoId);
         return ResponseEntity.ok(novoStatus);
