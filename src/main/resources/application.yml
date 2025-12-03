@@ -21,6 +21,9 @@ spring:
       hibernate:
         format_sql: true
 
+jwt:
+  secret: ${JWT_SECRET:uma_chave_super_secreta_para_assinar_tokens_em_ambiente_de_desenvolvimento}
+
 ---
 # Configuração para produção (PostgreSQL)
 spring:
@@ -42,3 +45,6 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+
+jwt:
+  secret: ${JWT_SECRET:uma_chave_super_secreta_para_assinar_tokens_em_ambiente_de_produção}

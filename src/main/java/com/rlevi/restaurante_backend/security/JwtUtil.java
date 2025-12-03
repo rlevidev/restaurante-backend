@@ -1,21 +1,25 @@
 package com.rlevi.restaurante_backend.security;
 
+import java.security.Key;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
-import java.security.Key;
-import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String SECRET = "uma_chave_super_secreta_para_assinar_tokens"; 
+    @Value("${jwt.secret}")
+    private String secret;
+
     private final long EXPIRATION = 1000 * 60 * 60; // 1h
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(String nome, String role) {
