@@ -26,7 +26,7 @@ import lombok.Setter;
 public class Cupom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idCupom;
 
     // Código que o cliente digita: "RLEVIDEV10"
     @Column(nullable = false, unique = true)
