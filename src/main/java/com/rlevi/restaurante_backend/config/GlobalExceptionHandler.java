@@ -1,9 +1,12 @@
 package com.rlevi.restaurante_backend.config;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.rlevi.restaurante_backend.shared.dto.response.ErrorResponseDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.ValidationErrorResponseDTO;
+import com.rlevi.restaurante_backend.shared.exception.AuthenticationException;
+import com.rlevi.restaurante_backend.shared.exception.BusinessException;
+import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
+import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,14 +17,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.rlevi.restaurante_backend.shared.dto.response.ErrorResponseDTO;
-import com.rlevi.restaurante_backend.shared.dto.response.ValidationErrorResponseDTO;
-import com.rlevi.restaurante_backend.shared.exception.AuthenticationException;
-import com.rlevi.restaurante_backend.shared.exception.BusinessException;
-import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
-import com.rlevi.restaurante_backend.shared.exception.ResourceNotFoundException;
-
-import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
