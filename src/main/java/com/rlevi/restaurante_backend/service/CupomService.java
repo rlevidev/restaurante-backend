@@ -46,7 +46,7 @@ public class CupomService {
         
         // Desconto em porcentagem ( ex: 10% )
         if (cupom.getPercentDesconto() != null) {
-            BigDecimal percent = cupom.getPercentDesconto().divide(BigDecimal.valueOf(100));
+            BigDecimal percent = cupom.getPercentDesconto().divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN);
             BigDecimal desconto = total.multiply(percent);
             total = total.subtract(desconto);
         }
