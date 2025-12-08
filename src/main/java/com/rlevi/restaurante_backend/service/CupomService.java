@@ -5,6 +5,10 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.rlevi.restaurante_backend.shared.dto.request.CupomRequestDTO;
+import com.rlevi.restaurante_backend.shared.dto.response.CupomResponseDTO;
+import com.rlevi.restaurante_backend.shared.exception.DuplicateResourceException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,5 +75,56 @@ public class CupomService {
         if (cupom.getQuantidadeUtilizacao() == null) cupom.setQuantidadeUtilizacao(0);
         cupom.setQuantidadeUtilizacao(cupom.getQuantidadeUtilizacao() + 1);
         cupomRepository.save(cupom);
+    }
+
+
+  /**
+   * Incrementa a lógica de criação de cupom.
+   */
+  @Transactional
+    public CupomResponseDTO criarCupom(@Valid CupomRequestDTO request) {
+      // Verificar se o código já existe
+      if (cupomRepository.existsByCode(request.code())) {
+        throw new DuplicateResourceException("Cupom", "código", request.code());
+      }
+
+      Cupom cupom = new Cupom();
+      cupom.setCode(request.code());
+      cupom.setPercentDesconto(request.percentDesconto());
+      cupom.setFixedDesconto(request.fixedDesconto());
+      cupom.setValorMinimo(request.valorMinimo());
+      cupom.setQuantidadeUtilizacao(request.quantidadeUtilizacao());
+      cupom.setExpiraEm(request.expiraEm());
+      // Usa um operador ternário para definir o número de usos do código como 0 se for igual a null
+      cupom.setUsedCount(request.usedCount() != null ? request.usedCount() : 0);
+      cupom.setAtivo(request.ativo());
+
+      // Salva o cupom no banco de dados
+      cupom = cupomRepository.save(cupom);
+
+      // Mapear para response ; Determinar se o desconto é percentual ou fixo.
+      Double desconto = null;
+      String tipoDesconto = null;
+      if (cupom.getPercentDesconto() != null) {
+        desconto = cupom.getPercentDesconto().doubleValue();
+        tipoDesconto = "PERCENTUAL";
+      } else if (cupom.getFixedDesconto() != null) {
+        desconto = cupom.getFixedDesconto().doubleValue();
+        tipoDesconto = "FIXO";
+      }
+
+      // Define se o cupom é limitado ou ilimitado("quantidade": null) usando operador ternário
+      String tipoQuantidade = cupom.getQuantidadeUtilizacao() != null ? "LIMITADO" : "ILIMITADO";
+
+      // Cria uma resposta para a requisição
+      return new CupomResponseDTO(
+              cupom.getIdCupom(),
+              cupom.getCode(),
+              desconto,
+              cupom.getQuantidadeUtilizacao(),
+              tipoDesconto,
+              tipoQuantidade,
+              cupom.isAtivo() ? "ATIVO" : "INATIVO"
+      );
     }
 }
